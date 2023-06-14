@@ -1,0 +1,71 @@
+<% include ../../partials/header %>
+	
+	<div class="container-fluid">
+
+		<div class="row">
+			<% include ../menu-partial %>
+        	<div class="col-12 col-md-9 pt-3">
+        		<h2 class="fs-title center">Rooms</h2>
+        		<div class="container">
+        			<hr>
+        			<div class="row">
+	        			<% rooms.forEach(function(room){ %>
+	        				<div class="col-12 col-md-6 mb-2">
+	        					<div class="card">
+		        					<div class="card-header">
+		        						<h6 class="fs-title"><%= room.slots %> - &#8369;<%= (Number(room.room_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %> per person<h6>
+		        					</div>
+		        					<div class="card-body">
+		        						<div class="container">
+		        							<div class="row">
+				        						<% room.room_slots.forEach(function(slot){ %>
+				        							<div class="col-4 center">
+					        							<% if(slot.room_id == room.room_id){ %>
+										      				<% if(slot.occupant_id == null){ %>
+										      					<div class="inline">
+											      					<img src="/images/static/no_occupant.png" height="40px">
+											      					<p class="text">Vacant</p>
+											      				</div>
+										      				<% }else{ %>
+										      					<div class="inline">
+										      						<a href="/profile/<%= slot.user.user_id %>/about" class="profile-link">
+												      					<img src="/images/user_images/<%= slot.user.photo %>" class="img-circular">
+												      					<p class="text"><%= slot.user.profile.first_name %></p>
+												      				</a>
+											      				</div>
+										      				<% } %>
+										      			<% } %>
+										      		</div>
+				        						<% }); %>
+				        					</div>
+				        					<button class="btn btn-danger" data-target="#<%= room.room_id %>" data-toggle="modal">Vacate Slots</button>
+				        					<div class="modal fade" id="<%= room.room_id %>">
+											  	<div class="modal-dialog modal-dialog-centered" role="document">
+											    	<div class="modal-content">
+												      	<div class="modal-header">
+												        	<h5 class="modal-title" id="exampleModalLabel">Confirm to Vacate Room</h5>
+												        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												          	<span aria-hidden="true">&times;</span>
+												        	</button>
+												      	</div>
+												      	<div class="modal-footer">
+												      		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+												      		<form method="POST" action="/dorm/<%= dorm.dorm_id %>/vacateroom/<%= room.room_id %>">
+												      			<button type="submit" class="btn btn-success">Confirm</button>
+												      		</form>
+												      	</div>
+											    	</div>
+											  	</div>
+											</div>
+			        					</div>
+		        					</div>
+		        				</div>
+	        				</div>
+	        			<% }); %>
+	        		</div>
+        		</div>
+	        </div>
+  		</div>
+	</div>
+
+<% include ../../partials/footer %>

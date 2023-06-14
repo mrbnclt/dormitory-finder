@@ -1,0 +1,97 @@
+<% include ../partials/header %>
+	
+	<div class="container message-container">
+		<div class="row p-4">
+			<div class="message-contact-div bg-white col-12 col-md-3 p-4 center">
+				<img src="/images/user_images/<%= otherUser.photo %>" class="img-circle" style="height:150px; width:150px">
+				<h5 class="title-bold mt-2"><%= otherUser.profile.first_name + " " + otherUser.profile.last_name %></h5>
+				<h6 class="fde-text"><%= otherUser.profile.contact %></h6>
+				<hr>
+				<p class="fde-text"><%= otherUser.profile.self_description %></p>
+				<a target="_blank" href="/profile/<%= otherUser.user_id %>/about" class="btn btn-outline-info mt-2 w-100">View Profile</a>
+			</div>
+			<div class="col-12 col-md-1">
+			</div>
+			<div class="message-div bg-white col-12 col-md-8 p-0 card">
+				<div class="card-header bg-light">
+					<div class="row">
+						<div class="col-12 col-md-3 p-0">
+							<img src="/images/dorm_images/<%= info.dorm.dorm_images[0].image %>" class="w-100">
+						</div>
+						<div class="col-12 col-md-9">
+							<h5 class="title-bold"><%= info.dorm.dorm_name %></h5>
+							<h6 class="fde-text"><i class="fa fa-map-marker-alt"></i> <%= info.dorm.address_dorm.dorm_unit + " " + info.dorm.address_dorm.dorm_street + ", " +  info.dorm.address_dorm.dorm_city %></h6>
+							<a href="/listing/<%= info.dorm.dorm_id %>" target="_blank">Visit Dormitory Listing</a>
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<% convo.messages.forEach(function(message){ %>
+						<% if(message.from_user_id == currentUser.user_id){ %>
+							<div class="text-right">
+								<h6 class="fde-text">
+									<%= message.message %>
+									<br>
+									<small class="text-muted"><%= message.date_sent %></small>
+								</h6>
+							</div>
+						<% }else{ %>
+							<div class="text-left">
+								<img src="/images/user_images/<%= otherUser.photo %>" class="img-circle float-left" style="width:30px;height:30px">
+								<h6 class="fde-text">
+									<%= message.message %>
+									<br>
+									<small class="text-muted"><%= message.date_sent %></small>
+								</h6>
+							</div>
+						<% } %>
+					<% }); %>
+				</div>
+				<div class="card-footer bg-white">
+					<div class="input-group">
+					  	<input type="text" class="form-control" name="message" id="message">
+					  	<div class="input-group-append">
+					    	<button class="btn btn-danger" type="button" id="sendBtn">Send</button>
+					  	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$("#sendBtn").click(function(){
+			$.ajax({
+				type:"POST",
+				url:"/message/<%= convo.conversation_id %>/new",
+				data: {from_user: <%= currentUser.user_id %>, to_user: <%= otherUser.user_id %>, message: $("#message").val()},
+				success: function(result){
+					if(result === "failed"){
+						alert("Sending message failed.");
+					}else{
+						$("#message").val("");
+						var date = new Date(result.date_sent);
+						$(".card-body").append('<div class="text-right"><h6 class="fde-text">'+ result.message +'<br><small class="text-muted">'+ date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() +'</small></h6></div>');
+					}
+				}
+			});
+		});
+
+		setInterval(function(){ 
+			$.ajax({
+				type:"GET",
+				url:"/message/<%= convo.conversation_id %>/new",
+				data: {to_user: <%= currentUser.user_id %> },
+				success: function(result){
+					if(result != "failed"){
+						result.forEach(function(message){
+							$(".card-body").append('<div class="text-left"><img src="/images/user_images/<%= otherUser.photo %>" class="img-circle float-left" style="width:30px;height:30px"><h6 class="fde-text">'+ message.message +'<br><small class="text-muted">'+ message.date_sent +'</small></h6></div>')
+						});
+					}
+					
+				}
+			}); 
+		}, 500);
+	</script>
+
+<% include ../partials/footer %>

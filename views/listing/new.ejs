@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Finding Dorm-E</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- PUBLIC ASSETS LINK -->
+		<link rel="stylesheet" type="text/css" href="/assets/app.css">
+		<link rel="stylesheet" type="text/css" href="/Bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="/PrettyCheckbox/pretty-checkbox.min.css"></link>
+		<script type="text/javascript" src="/jQuery/jquery.js"></script>
+		<script type="text/javascript" src="/Bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/PopperJS/popper.min.js"></script>
+		<script defer src="/FontAwesome/js/fontawesome-all.js"></script>
+		<!-- END PUBLIC ASSETS LINK -->
+
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-light bg-white py-0 fixed-top">
+			<div class="container">
+	 	 		<a class="navbar-brand" href="/">Dorm-E</a>
+	 	 		<h6 id="step" class="navbar-text my-auto">Step 1: First things first</h6>
+	  			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_menu">
+	    			<span class="navbar-toggler-icon"></span>
+	  			</button>
+
+				<div class="collapse navbar-collapse" id="navbar_menu">
+				    <ul class="navbar-nav ml-auto h-100 ">
+				      	<li class="nav-item dropdown ml-2">
+				      		<div class="btn-group">
+								<a href="#" class="nav-link" data-toggle="dropdown">
+								   <div class="img-circle-header" style="background-image: url('/images/user_images/<%= currentUser.photo %>')">
+									</div>
+								</a>
+								<div class="dropdown-menu dropdown-menu-right mt-4">
+									<a class="dropdown-item" href="/profile/<%= currentUser.user_id %>">Edit Profile</a>
+								    <div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="/profile/<%= currentUser.user_id %>/password">Account</a>
+									<div class="dropdown-divider"></div>
+								   	<a href="/logout" class="dropdown-item" href="#">Logout</a>
+								</div>
+							</div>
+				      	</li>
+				    </ul>
+				</div>
+			</div>
+		</nav>
+<!-- 		<div class="fixed-bottom progress" style="height:7px">
+			<div id="pbar" class="bg-info progress-bar" role="progressbar"></div>
+		</div> -->
+		<div class="container">
+		  	<div class="row"> 
+		    	<div class="col-12" id="main">
+		    		<form id="msform" enctype="multipart/form-data" action="/listing/new" method="POST">
+						<fieldset>
+							<h3 class="fs-title">Let's get started. First, let's go to the basics</h3>
+							<h5 class="fs-subtitle">Is your dormitory?</h5>
+							<div class="form-group">
+								<select class="form-control form-control-lg w-75" id="dorm_storey" name="dorm_storey">
+									<option>One Storey</option>
+									<option>Two Storey</option>
+									<option>Three Storey</option>
+									<option>Four Storey</option>
+									<option>Five Storey</option>
+									<option>Six Storey</option>
+									<option>Seven Storey</option>
+									<option>Eight Storey</option>
+									<option>Nine Storey</option>
+									<option>Ten Storey</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<select class="form-control w-75 form-control-lg" id="dorm_gender" name="dorm_gender">
+									<option>For males and females</option>
+									<option>For females</option>
+									<option>For males</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<select class="form-control form-control-lg w-75" name="dorm_type" id="dorm_type">
+									<option>Dormitory</option>
+									<option>Dormitel</option>
+									<option>Appartment</option>
+									<option>Bedspacing</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<input type="text" id="dorm_complete_loc" class="form-control form-control-lg w-75" name="dorm_complete_loc" value="Metro Manila, Philippines">
+							</div>
+							<hr>
+							<input type="button" name="next" class="next btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Then let's set some rules for your tenants to follow.</h3>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_smoking" name="dorm_smoking"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Smoking Allowed</label>
+							    </div>
+							</div>
+							<br>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_parties" name="dorm_parties"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Parties or Events Allowed</label>
+							    </div>
+							</div>
+							<br>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_pets" name="dorm_pets"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Pets Allowed</label>
+							    </div>
+							</div>
+							<div class="form-group">
+								<label class="form-check-label">More Rules?</label>
+								<textarea rows="5" id="dorm_more_rules" name="dorm_more_rules" class="form-control form-control-lg" placeholder="Quiet hours? "></textarea>
+							</div>
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="next btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">What are the amenities do you offer in your dormitory?</h3>
+							<h6 class="fs-subtitle">Basic Amenities</h6>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_wifi" name="dorm_wifi"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>WiFi</label>
+							    </div>
+							</div>
+							<br>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_closetdrawers" name="dorm_closetdrawers"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Closet/Drawers</label>
+							    </div>
+							</div>
+							<br>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_tv" name="dorm_tv"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>TV</label>
+							    </div>
+							</div>
+							<br>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_aircon" name="dorm_aircon"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Air Conditioning</label>
+							    </div>
+							</div>
+							<br>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_iron" name="dorm_iron"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Iron</label>
+							    </div>
+							</div>
+							<br>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_kitchen" name="dorm_kitchen"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Kitchen</label>
+							    </div>
+							</div>
+							<br>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_washingmachine" name="dorm_washingmachine"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Washing Machine</label>
+							    </div>
+							</div>
+							<h6 class="fs-subtitle">Safety Amenities</h6>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_fireext" name="dorm_fireext"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Fire Extinguisher</label>
+							    </div>
+							</div>
+							<br>
+							<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							    <input type="checkbox" id="dorm_cctv" name="dorm_cctv"/>
+							    <div class="state p-info">
+							      	<i class="icon fa fa-check"></i>
+							        <label>Security Cameras/CCTV</label>
+							    </div>
+							</div>
+							<div class="form-group">
+								<label class="form-check-label">More Amenities?</label>
+								<textarea rows="5" id="dorm_more_amenities" name="dorm_more_amenities" class="form-control form-control-lg" placeholder="First Aid Kits? Smoke Detectors?"></textarea>
+							</div>
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="next btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">How many bathrooms are there in your dorm?</h3>
+							<div class="form-inline">
+								<label>Number of Bathrooms</label>
+								<input type="number" class="ml-3 form-control form-control-lg" id="dorm_bath" name="dorm_bath" min="1" value="1">
+							</div>
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="next btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Next, where's your dormitory located?</h3>
+							<div class="form-group">
+									<label>Enter your address</label>
+									<input class="form-control form-control-lg" type="text" name="dorm_address" id="dorm_address">
+								</div>
+							<div>
+								<div class="form-group">
+									<label>Unit Number + House/Building/Street Number</label>
+									<input class="form-control form-control-lg" type="text" name="unit_number" id="unit_number">
+								</div>
+								<div class="form-group">
+									<label>Street Name</label>
+									<input class="form-control form-control-lg" type="text" name="route" id="route">
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-lg-6 col-sm-12">
+											<label>City</label>
+											<input class="form-control form-control-lg" type="text" name="locality" id="locality">
+										</div>
+										<div class="col-lg-6 col-sm-12">
+											<label>State</label>
+											<input class="form-control form-control-lg" type="text" name="administrative_area_level_1" id="administrative_area_level_1">
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="next btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Is the pin on the right place?</h3>
+							<h3 class="fs-subtitle">Drag the pin to the exact location of your dorm.</h3>
+							<div id="map">
+							</div>
+							<input type="hidden" id="dorm_long" name="dorm_long" value="120.988567">
+							<input type="hidden" id="dorm_lat" name="dorm_lat" value="14.604174">
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="next-step btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Describe your dormitory</h3>
+							<h5 class="fs-subtitle">Summary</h5>
+							<div class="form-group">
+								<textarea id="dorm_summary" name="dorm_summary" class="form-control form-control-lg" rows="5" placeholder="Describe what they can expect on your dorm, what's nearby, etc...."></textarea>
+							</div>
+							<div class="form-group">
+								<label>What's nearby your dorm? <strong>(Hospitals, Markets, Establishments, Schools, etc.)</strong></label>
+								<textarea class="form-control form-control-lg" rows="5" id="dorm_about" name="dorm_about"></textarea>
+							</div>
+							<div class="form-group">
+								<label>What tenants can access <strong>(Can they use the basement, pools (if any), rooftop, etc.)</strong></label>
+								<textarea class="form-control form-control-lg" id="dorm_access" name="dorm_access" rows="5"></textarea>
+							</div>
+							<div class="form-group">
+								<label>Other things to note <strong>(Enter anything else you want to tell your tenants.)</strong></label>
+								<textarea class="form-control form-control-lg" id="dorm_note" name="dorm_note" rows="5"></textarea>
+							</div>
+							<hr>
+							<h5 class="fs-subtitle">The Neighborhood</h5>
+							<div class="form-group">
+								<label>About the neighborhood <strong>(Are the neighbors friendly, noisy, lively, etc.)</strong></label>
+								<textarea class="form-control form-control-lg" id="dorm_about_neigh" name="dorm_about_neigh" rows="5"></textarea>
+							</div>
+							<div class="form-group">
+								<label>How to get around <strong>(Tell your tenants how to go to somewhere, what are the public transportations nearby, etc.)</strong></label>
+								<textarea class="form-control form-control-lg" id="dorm_how_neigh" name="dorm_how_neigh" rows="5"></textarea>
+							</div>
+							<hr>
+							<input type="button" name="prev-step" class="prev-step btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="next btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Name your dormitory</h3>
+							<input type="text" class="form-control form-control-lg" id="dorm_name" name="dorm_name">
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="next btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Now show your guests what your dorm looks like.</h3>
+							<h5 class="fs-subtitle">You can click on the photos to change images.</h5>
+							<div class="uploads">
+								<div class="row">
+									<div class="col-12 file_upload">
+										<input class="upload_photo" type="file" id="0" name="image[0]">
+										<label class='m-0 p-0 w-50' id='lbl-0' for='0' tabindex='0'>
+											<div class='add_photo_div'>
+												<div class='add_photo_container'>
+													<div class='add_photo_container_middle'>
+														<i class='fas fa-plus img-center'></i>
+														<div class='text-gray mt-2'>
+															<span>Add photo</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</label>
+										<label for='0' class="image-label">
+											<button id="close-0" type="button" class="close hidden remove-image"><span aria-hidden="true">&times;</span></button>
+											<img src="" id="photo-0-preview">
+											<input class="form-control hidden caption" placeholder="Add caption for this photo" type="text" name="caption[0]" id="caption-0">
+										</label>
+									</div>
+								</div>
+								<div class="row" id="more-images">
+								</div>
+								<input type="hidden" name="imagecount" id="imagecount" value="0">
+							</div>
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="next-step btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Room arrangements</h3>
+							<div class="rooms" id="room_container">
+								<div class="card" id="card-1">
+									<div class="card-header">
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<span class="input-group-text">&#8369;</span>
+											</div>
+											<input type="number" name="room[1][amount]" id="room-amount-1" class="form-control text-center payments" min="0" value="0">
+											<div class="input-group-append">
+												<div class="input-group-append">
+												    <span class="input-group-text">per month</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="card-body">	
+										<div class="form-group w-100">
+											<div class="form-inline">	
+												<select class="form-control w-100" id="room-capacity-1" name="room[1][capacity]">
+													<option>For 1 person</option>
+													<option>For 2 people</option>
+													<option>For 3 people</option>
+													<option>For 4 people</option>
+													<option>For 5 people</option>
+													<option>For 6 people</option>
+													<option>For 7 people</option>
+													<option>For 8 people</option>
+													<option>For 9 people</option>
+													<option>For 10 people</option>
+												</select>	
+											</div>
+										</div>					
+										<div class="form-group">
+											<div class="form-inline">
+												<div class="container p-0">
+													<div class="row">
+														<div class="col-3">
+															<div class="input-group">
+																<div class="input-group-prepend">
+																	<span class="input-group-text">Sofa Bed</span>
+																</div>
+																<input type="number" name="room[1][sofabed]" id="room-sofabed-1" class="form-control text-center" value="0">
+															</div>
+														</div>
+														<div class="col-3">
+															<div class="input-group">
+																<div class="input-group-prepend">
+																	<span class="input-group-text">Queen Size</span>
+																</div>
+																<input type="number" name="room[1][queensize]" id="room-queenzise-1" class="form-control text-center" value="0">
+															</div>
+														</div>
+														<div class="col-3">
+															<div class="input-group">
+																<div class="input-group-prepend">
+																	<span class="input-group-text">Single Bed</span>
+																</div>
+																<input type="number" name="room[1][singlebed]" id="room-singlebed-1" class="form-control text-center" value="0">
+															</div>
+														</div>
+														<div class="col-3">
+															<div class="input-group">
+																<div class="input-group-prepend">
+																	<span class="input-group-text">Double Decker</span>
+																</div>
+																<input type="number" name="room[1][doubledecker]" id="room-doubledecker-1" class="form-control text-center" value="0">
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											<select class="form-control" id="room-gender-1" name="room[1][gender]">
+												<option selected>For females</option>
+												<option>For males</option>
+												<option>For males and females</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<h5>Room Description</h5>
+											<textarea rows="5" id="room_description-1" name="room[1][description]" class="form-control form-control-lg" placeholder="Describe this room. What is difference of the room from the others?"></textarea>
+										</div>
+										<div class="form-group">
+											<div class="input-group">
+												<div class="input-group-prepend">
+												    <span class="input-group-text">There are</span>
+												</div>
+												<input type="number" name="room[1][count]" id="room-count-1" class="form-control text-center" min="1" value="1">
+												<div class="input-group-append">
+												    <span class="input-group-text">of this room in my dorm.</span>
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="input-group">
+												<div class="input-group-prepend">
+												    <span class="input-group-text">Utility bill is</span>
+												</div>
+												<select class="form-control" id="room-monthly-1" name="room[1][monthly]">
+													<option>included on rent payment</option>
+													<option>not included on rent payment</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="room-preview p-0 hidden" id="room_preview">
+						    	<div class="container my-3">
+						    		<h6 class="title-bold text-center">Your Rooms</h6>
+									<ul class="list-group" id="room_preview_list">
+									</ul>
+								</div>
+			    			</div>
+							<input type="hidden" id="roomcount" name="roomcount" value="1">
+							<input type="button" id="add_room" class="btn btn-outline-dark mt-3" value="Add More">
+							<input type="button" id="save_edit" class="btn btn-outline-dark mt-3 hidden" value="Save Changes">
+							<hr>
+							<input type="button" name="prev" class="prev-step btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="next-step btn btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Payment</h3>
+							<div class="form-group">
+								<h6 class="fs-subtitle">Advance Payment (Months)</h6>
+								<input type="number" min="0" value="1" class="form-control form-control-lg" id="dorm_advance_payment" name="dorm_advance_payment">
+							</div>
+							<div class="form-group">
+								<h6 class="fs-subtitle">Deposit (PHP)</h6>
+								<input type="number" max="99999" min="0" value="3000" class="form-control form-control-lg" id="deposit" name="deposit">
+								<small class="text-muted">Whenever the tenant broke something in your dorm you can use their deposit as the payment for what they broke.</small>
+							</div>
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="btn next btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Required Documents</h3>
+							<h6 class="fs-subtitle">Please provide a scanned image of the necessary documents listed below.</h6>
+							<div class="alert alert-danger hidden" id="documents_alert">
+								Please provide all required documents below before proceeding.
+							</div>
+							<div class="form-group">
+								<label for="exampleFormControlFile1">License from the city your dorm is in.</label>
+							    <input type="file" class="form-control-file" id="city_license" name="city_license">
+							</div>
+							<div class="form-group">
+								<label for="exampleFormControlFile1">Sanitary Permit</label>
+							    <input type="file" class="form-control-file" id="sanitary_permit" name="sanitary_permit">
+							</div>
+							<div class="form-group">
+								<label for="exampleFormControlFile1">Fire Safety Inspection Certificate</label>
+							    <input type="file" class="form-control-file" id="fire_safety_certificate" name="fire_safety_certificate">
+							</div>
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="btn next btn-little-black" value="Next">
+						</fieldset>
+						<fieldset>
+							<h3 class="fs-title">Note:</h3>
+							<div class="form-group">
+								<h6 class="fs-subtitle">Please agree that for every reservations made for this dormitory, Finding Dorm-E will take 10% of the amount paid by the reservee. And the Remaining amount after cutting the 10% will be forward to you immediately on PayPal.</h6>
+								<div class="pretty p-default p-curve">
+							        <input type="radio" name="answer" id="agree"/ value="agree">
+							        <div class="state p-success-o">
+							            <label>Agree</label>
+							        </div>
+							    </div>
+							    <div class="pretty p-default p-curve">
+							        <input type="radio" name="answer" id="disagree"/ value="disagree">
+							        <div class="state p-danger-o">
+							            <label>Disagree</label>
+							        </div>
+							    </div>
+							</div>
+							<hr>
+							<input type="button" name="prev" class="prev btn btn-little-gray" value="Previous">
+							<input type="button" name="next" class="finish btn btn-little-black" value="Continue">
+						</fieldset>
+					</form>
+			    </div>
+
+			    <div class="info-window hidden" id="sidebar">
+				    <div class="info-title">
+				    	<i class="fas fa-info"></i>
+				    </div>
+				    <div class="info-content">
+				    	<p id="info">Guests will first search for dormitories from a location. Enter the city where your dormitory is located.</p>
+				    </div>
+			    </div>  
+		  </div>
+		</div>
+
+	<script type="text/javascript" src="/jQueryEasing/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="/jQueryEasing/jquery.easing.min.js"></script>
+
+	<script type="text/javascript" src="/assets/listing.js"></script>
+	<script type="text/javascript" src="/assets/room.js"></script>
+	<script type="text/javascript" src="/assets/map.js"></script>
+
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAeqKaE2xSUv_iplHE5GK1baRKlwKyURrE&libraries=places&callback=initMap"
+	        async defer></script>
+
+
+<% include ../partials/footer %>

@@ -1,0 +1,503 @@
+<% include ../partials/header %>
+
+<div class="container mt-3 mb-5">
+	<div class="row">
+		<div class="col-12 col-lg-3 mb-2 w-100">
+			<div class="owner-div round-corner text-center">
+				<h6 class="title-bold">Update Your Dormitory's Information</h6>
+				<img src="/images/user_images/<%= ownerName.photo %>" class="img-circle" style="height:100px; width:100px;">
+				<br>
+				<button id="updateButton" class="btn btn-outline-danger mt-2 w-100">Save Changes</button>
+			</div>
+		</div>
+		<div class="col-12 col-lg-9">
+			<form enctype="multipart/form-data" action="/listing/<%= dorm.dorm_id %>/update" method="POST" id="form_update">
+				<div class="img-thumbnail">
+					<div class="uploads p-3">
+						<h6 class="title-bold">Image Gallery:</h6>
+						<div class="row" id="more-images">
+							<% var captionCtr = 0; %>
+							<% dorm.dorm_images.forEach(function(image){ %>					
+								<div class="col-lg-4 col-md-4 file_upload">
+									<label for='<%= image.dorm_image_id %>' class="image-label">
+										<button id="<%= image.dorm_image_id %>" type="button" class="close remove-image-old">
+											<span aria-hidden="true">&times;</span>
+										</button>
+										<img class="other_photo cover" src="/images/dorm_images/<%= image.image %>" style="display: block !important">
+										<input type="hidden" name="image_old[<%= captionCtr %>][image_id]" value="<%= image.dorm_image_id %>">
+										<input class="form-control caption" value="<%= image.caption %>" type="text" name="image_old[<%= captionCtr %>][caption]">
+									</label>
+								</div>
+								<% captionCtr++; %>
+							<% }); %>
+							<div class="col-lg-4 col-md-4 file_upload">
+								<input class="upload_photo" type="file" id="0" name="image[0]">
+								<label class='m-0 p-0 w-100' id='lbl-0' for='0' tabindex='0'>
+									<div class='add_photo_div'>
+										<div class='add_photo_container'>
+											<div class='add_photo_container_middle'>
+												<i class='fas fa-plus img-center'></i>
+												<div class='text-gray mt-2'>
+													<span>Add photo</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</label>
+								<label for='0' class="image-label">
+									<button id="close-0" type="button" class="close hidden remove-image-new"><span aria-hidden="true">&times;</span></button>
+									<img src="" id="photo-0-preview">
+									<input class="form-control hidden caption" placeholder="Add caption for this photo" type="text" name="caption[0]" id="caption-0">
+								</label>
+							</div>
+						</div>
+						<input type="hidden" name="imagecount" id="imagecount" value="0">
+					</div>
+					<div class="caption-full">
+						<h6 class="title-bold">Dormitory Name: </h6>
+						<input type="text" class="form-control form-control-lg" name="dorm_name" value="<%= dorm.dorm_name %>">
+						<div class="small-info mt-4">
+							<div class="row">
+								<div class="col-3">
+									<label><i class="fas fa-building"></i> Number of Storeys </label>
+								</div>
+								<div class="col-3">
+									<label><i class="fas fa-building"></i> Dormitory Type </label>
+								</div>
+								<div class="col-3">
+									<label><i class="fas fa-transgender"></i> Gender</label>
+								</div>
+								<div class="col-3">
+									<label><img src="/images/svg/026-bathroom.svg" class="svg"> Number of Bathrooms</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-3">
+									<select class="form-control" name="dorm_storey">
+										<% var storeyArray = ["One Storey", "Two Storey", "Three Storey", "Four Storey", "Five Storey", "Six Storey", "Seven Storey", "Eight Storey", "Nine Storey", "Ten Storey"]; %>
+										<% storeyArray.forEach(function(storey){ %>
+											<% if(storey === dorm.dorm_storey){ %>
+												<option selected><%= storey %></option>
+											<% }else{ %>
+												<option><%= storey %></option>
+											<% } %>
+										<% }); %>
+									</select>
+								</div>
+								<div class="col-3">
+									<select class="form-control" name="dorm_type">
+										<% if(dorm.dorm_type === "Dormitory"){ %>
+											<option selected>Dormitory</option>
+											<option>Dormitel</option>
+											<option>Appartment</option>
+											<option>Bedspacing</option>
+										<% }else if(dorm.dorm_type === "Dormitel"){ %>
+											<option>Dormitory</option>
+											<option selected>Dormitel</option>
+											<option>Appartment</option>
+											<option>Bedspacing</option>
+										<% }else if(dorm.dorm_type === "Appartment"){ %>
+											<option>Dormitory</option>
+											<option>Dormitel</option>
+											<option selected>Appartment</option>
+											<option>Bedspacing</option>
+										<% }else{ %>
+											<option>Dormitory</option>
+											<option>Dormitel</option>
+											<option>Appartment</option>
+											<option selected>Bedspacing</option>
+										<% } %>
+									</select>
+								</div>
+								<div class="col-3">
+									<select class="form-control" name="dorm_gender">
+										<% if(dorm.dorm_gender === "For females"){ %>
+											<option selected>For females</option>
+											<option>For males</option>
+											<option>For males and females</option>
+										<% }else if(dorm.dorm_gender === "For males"){ %>
+											<option>For females</option>
+											<option selected>For males</option>
+											<option>For males and females</option>
+										<% }else{ %>
+											<option>For females</option>
+											<option>For males</option>
+											<option selected>For males and females</option>
+										<% } %>
+									</select>
+								</div>
+								<div class="col-3">
+									<input type="number" class="form-control" id="dorm_bath" name="dorm_bath" min="1" value="<%= dorm.dorm_bathroom %>">
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col-6">
+									<label>Advance Payment</label>
+									<input type="number" class="form-control form-control-lg" name="dorm_advance_payment" value="<%= dorm.dorm_advance_payment %>" min="0">
+								</div> 
+								<div class="col-6">
+									<label>Deposit</label>
+									<input type="number" class="form-control form-control-lg" name="deposit" value="<%= dorm.dorm_deposit %>" min="500" max="99999">
+								</div> 
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr>
+				<div class="card no-border bg-light mt-2">
+					<h6 class="title-bold">Summary:</h6>
+					<div class="summary">
+						<textarea class="form-control form-control-lg" rows="5" name="dorm_summary"><%= dorm.dorm_summary%></textarea>
+					</div>
+					<h6 class="title-bold">About the dormitory:</h6>			
+					<div class="about">
+						<textarea class="form-control form-control-lg" rows="5" name="dorm_about"><%= dorm.dorm_about %></textarea>
+					</div>
+					<h6 class="title-bold">What the tenants can access:</h6>
+					<div class="access">
+						<textarea class="form-control form-control-lg" rows="5" name="dorm_access"><%= dorm.dorm_access %></textarea>
+					</div>
+					<h6 class="title-bold">Other things tenants need to know: </h6>
+					<div class="access">
+						<textarea class="form-control form-control-lg" rows="5" name="dorm_note"><%= dorm.dorm_note %></textarea>
+					</div>
+					<hr>
+					<h6 class="title-bold">Amenities</h6>
+					<div class="rules mt-2">
+						<% var wifi, closet, tv, aircon, iron, kitchen, washing, cctv, fire; %>
+						<% if(dorm.dorm_amenity.dorm_wifi){ %>
+							<% wifi = "checked"; %>
+						<% } %>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox" name="dorm_wifi" <%= wifi %>/>
+							<div class="state p-info">
+								<i class="icon fa fa-check"></i>
+								<label>Wifi</label>
+							</div>
+						</div>
+						<% if(dorm.dorm_amenity.dorm_closetdrawers){ %>
+							<% closet = "checked"; %>
+						<% } %>
+						<br>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox"  name="dorm_closetdrawers" <%= closet %>/>
+							<div class="state p-info">
+								   <i class="icon fa fa-check"></i>
+								   <label>Closet/Drawers</label>
+							</div>
+						</div>
+						<% if(dorm.dorm_amenity.dorm_tv){ %>
+							<% tv = "checked"; %>
+						<% } %>
+						<br>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox"  name="dorm_tv" <%= tv %>/>
+							<div class="state p-info">
+							    <i class="icon fa fa-check"></i>
+							    <label>T.V.</label>
+							</div>
+						</div>
+						<% if(dorm.dorm_amenity.dorm_aircon){ %>
+							<% aircon = "checked"; %>
+						<% } %>
+						<br>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox"  name="dorm_aircon" <%= aircon %>/>							
+							<div class="state p-info">
+								<i class="icon fa fa-check"></i>
+								<label>Airconditioning</label>
+							</div>
+						</div>
+						<% if(dorm.dorm_amenity.dorm_iron){ %>
+							<% iron = "checked"; %>
+						<% } %>
+						<br>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox"  name="dorm_iron" <%= iron %>/>
+							<div class="state p-info">
+							    <i class="icon fa fa-check"></i>
+							    <label>Iron</label>
+							</div>
+						</div>
+						<% if(dorm.dorm_amenity.dorm_kitchen){ %>
+							<% kitchen = "checked"; %>
+						<% } %>
+						<br>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox"  name="dorm_kitchen" <%= kitchen %>/>
+							<div class="state p-info">
+							    <i class="icon fa fa-check"></i>
+							    <label>Kitchen</label>
+							</div>
+						</div>
+						<% if(dorm.dorm_amenity.dorm_washingmachine){ %>
+							<% washing = "checked"; %>
+						<% } %>
+						<br>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox"  name="dorm_washingmachine" <%= washing %>/>
+							<div class="state p-info">
+							    <i class="icon fa fa-check"></i>
+							    <label>Washing Machine</label>
+							</div>
+						</div>
+					</div>
+					<h6 class="title-bold">Safety Amenities</h6>
+					<% if(dorm.dorm_amenity.dorm_fireext){ %>
+						<% fire = "checked"; %>
+					<% } %>
+					<div class="pretty p-icon p-smooth mb-3 p-bigger">
+						<input type="checkbox"  name="dorm_fireext" <%= fire %>/>
+						<div class="state p-info">
+							<i class="icon fa fa-check"></i>
+							<label>Fire Extinguisher</label>
+						</div>
+					</div>
+					<% if(dorm.dorm_amenity.dorm_cctv){ %>
+						<% cctv = "checked"; %>
+					<% } %>
+					<div class="pretty p-icon p-smooth mb-3 p-bigger">
+						<input type="checkbox"  name="dorm_cctv" <%= cctv %>/>
+						<div class="state p-info">
+							<i class="icon fa fa-check"></i>
+							<label>CCTV/Security Cameras</label>
+						</div>
+					</div>
+					<hr class="w-25 ml-0">
+					<h6 class="title-bold">More Amenities</h6>
+					<textarea class="form-control form-control-lg" rows="5" name="dorm_more_amenities"><%= dorm.dorm_amenity.dorm_more_amenities %></textarea>
+					<hr>
+					<h6 class="title-bold">House Rules</h6>
+					<div class="rules mt-3">
+						<% var smoking, pets, party;%>
+						<% if(dorm.dorm_rule.dorm_smoking){ %>
+							<% smoking = "checked"; %>
+						<% } %>
+						<% if(dorm.dorm_rule.dorm_pets){ %>
+							<% pets = "checked"; %>
+						<% } %>
+						<% if(dorm.dorm_rule.dorm_parties){ %>
+							<% party = "checked"; %>
+						<% } %>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox" name="dorm_smoking" <%= smoking %>/>
+							<div class="state p-info">
+								<i class="icon fa fa-check"></i>
+								<label>Smoking Allowed</label>
+							</div>
+						</div>
+						<br>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox" name="dorm_pets" <%= pets %>/>
+							<div class="state p-info">
+								<i class="icon fa fa-check"></i>
+								<label>Pets Allowed</label>
+							</div>
+						</div>
+						<br>
+						<div class="pretty p-icon p-smooth mb-3 p-bigger">
+							<input type="checkbox" name="dorm_parties" <%= party %>/>
+							<div class="state p-info">
+								<i class="icon fa fa-check"></i>
+								<label>Parties or Events Allowed</label>
+							</div>
+						</div>
+					</div>
+					<hr class="w-25 ml-0">
+					<h6 class="title-bold">More Rules</h6>
+					<textarea class="form-control form-control-lg" rows="5" name="dorm_more_rules"><%= dorm.dorm_rule.dorm_more_rules %></textarea>
+					<hr>
+					<% var ctr = 0; %>
+					<h6 class="title-bold">Available Rooms</h6>
+					<div class="rooms">
+						<% room.forEach(room => { %>
+							<a href="" data-toggle="modal" data-target="#<%= room.room_id %>">
+								<div class="room">
+									<i class="fas fa-bed fa-lg"></i>
+									<h6 class="mt-3 title-bold"><%= room.room_name %></h6>
+									<h6><%= room.slots %></h6>
+								</div>
+							</a>
+							<div class="modal fade" id="<%= room.room_id %>" tabindex="-1" role="dialog">
+							  	<div class="modal-dialog modal-dialog-centered" role="document">
+							  		<div class="container-fluid">
+								    	<div class="modal-content">
+								    		<div class="modal-header">
+								    			<input type="hidden" name="room_old[<%= ctr %>][room_id]" value="<%= room.room_id %>">
+								    			<div class="input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text">&#8369;</span>
+													</div>
+													<input type="number" name="room_old[<%= ctr %>][amount]" class="form-control text-center" min="500" value="<%= room.room_amount %>">
+													<div class="input-group-append">
+														<div class="input-group-append">
+															<span class="input-group-text">per month</span>
+														</div>
+													</div>
+												</div>
+									      		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									          		<span aria-hidden="true">&times;</span>
+										        </button>
+										    </div>
+								      		<div class="modal-body">
+								      			<h6 class="title-bold">Slots:</h6>
+								      			<div class="slots">
+								      				<% room.room_slots.forEach(slot => { %>
+								      					<% if(slot.room_id == room.room_id){ %>
+								      						<% if(slot.occupant_id == null){ %>
+								      							<div class="inline">
+									      							<img src="/images/static/no_occupant.png" height="40px">
+									      							<p>Available</p>
+									      						</div>
+								      						<% }else{ %>
+								      							<% occupant.forEach(occupant => { %>
+								      								<% if(slot.occupant_id == occupant.user_id){ %>
+								      									<div class="inline">
+									      									<img src="/images/user_images/<%= occupant.photo %>" class="img-circular">
+									      									<p><%= occupant.first_name %></p>
+									      								</div>
+								      								<% } %>
+								      							<% }); %>
+								      						<% } %>
+								      					<% } %>
+								      				<% }); %>
+								      			</div>
+								      			<hr>
+								      			<h6 class="title-bold">Room Description</h6>
+								      			<div class="about">
+								      				<textarea class="form-control form-control-lg" rows="5" name="room_old[<%= ctr%>][description]"><%= room.room_description %></textarea>
+								      			</div>
+								      			<hr>
+												<div class="input-group">
+													<div class="input-group-prepend">
+													    <span class="input-group-text title-bold">Utility bill is</span>
+													</div>
+													<select class="form-control" name="room_old[<%= ctr %>][monthly]">
+														<% if(room.room_utility === "included on rent payment"){ %>
+															<option selected>included on rent payment</option>
+															<option>not included on rent payment</option>
+														<% }else{ %>
+															<option>included on rent payment</option>
+															<option selected>not included on rent payment</option>
+														<% } %>
+													</select>
+												</div>
+								      		</div>
+								    	</div>
+								    </div>
+							  	</div>
+							</div>
+							<% ctr++; %>
+						<% }); %>
+					</div>
+					<h6 class="title-bold" id="more_rooms_title">Add More Rooms</h6>
+					<div id="addroomdiv" class="mb-5">
+					</div>
+					<button class="btn btn-info" id="addroom">Add</button>
+					<hr>
+					<h6 class="title-bold">About the neighborhood</h6>
+					<div class="access">
+						<textarea class="form-control form-control-lg" rows="5" name="dorm_about_neight"><%= dorm.dorm_about_neigh %></textarea>
+					</div>
+					<h6 class="title-bold">How to get around</h6>
+					<div class="access">
+						<textarea class="form-control form-control-lg" rows="5" name="dorm_how_neigh'"><%= dorm.dorm_how_neigh %></textarea>
+					</div>
+					<hr>
+					<h6 class="title-bold">Location</h6>
+					<div class="form-group m-0">
+					<label>Update Address</label>
+						<input class="form-control form-control-lg" type="text" name="dorm_address" id="dorm_address">
+					</div>
+					<div class="form-group m-0">
+						<label>Unit Number + House/Building/Street Number</label>
+						<input class="form-control form-control-lg" type="text" name="unit_number" id="unit_number" value="<%= dorm.address_dorm.dorm_unit %>">
+					</div>
+					<div class="form-group m-0">
+						<label>Street Name</label>
+						<input class="form-control form-control-lg" type="text" name="route" id="route" value="<%=dorm.address_dorm.dorm_street %>">
+					</div>
+					<div class="form-group m-0">
+						<div class="row">
+							<div class="col-lg-6 col-sm-12">
+								<label>City</label>
+								<input class="form-control form-control-lg" type="text" name="locality" id="locality" value="<%= dorm.address_dorm.dorm_city %>">
+							</div>
+							<div class="col-lg-6 col-sm-12">
+								<label>State</label>
+								<input class="form-control form-control-lg" type="text" name="administrative_area_level_1" id="administrative_area_level_1" value="<%= dorm.address_dorm.dorm_region%>">
+							</div>
+						</div>
+					</div>
+					<input type="hidden" name="lat" id="lat" value="<%= dorm.address_dorm.dorm_lat %>">
+					<input type="hidden" name="lng" id="lng" value="<%= dorm.address_dorm.dorm_long %>"> 
+					<div id="map" class="mapshow">
+					</div>
+					<input type="hidden" id="dorm_long" name="dorm_long" value="<%= dorm.address_dorm.dorm_long %>">
+					<input type="hidden" id="dorm_lat" name="dorm_lat" value="<%= dorm.address_dorm.dorm_lat %>">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAeqKaE2xSUv_iplHE5GK1baRKlwKyURrE&libraries=places&callback=initMap" async defer></script>
+<script type="text/javascript" src="/assets/map.js"></script>
+<script type="text/javascript">
+	
+	var ctr = 0, removeCtr = 0;
+
+	$(document).on("change", "input:file", function(){
+		fileUpload(this);
+		appendImageUpload(this, ctr);
+	});
+
+	function fileUpload(input){
+		var id = $(input).attr("id");
+		$("#photo-"+ id + "-preview").addClass("other_photo");		
+		$("#photo-"+ id + "-preview").addClass("cover");
+		var preview = document.getElementById("photo-" + id + "-preview");
+		var file    = document.getElementById(id).files[0];
+		var reader  = new FileReader();
+		reader.addEventListener("load", function () {
+			preview.src = reader.result;
+		}, false);
+		if (file) {
+			reader.readAsDataURL(file);
+		}
+		ctr++;
+		$("#close-" + id).removeClass("hidden");
+		$("#imagecount").val(Number(ctr)); 
+		$("#lbl-" + id).css("display", "none");
+		$("#caption-" + id).removeClass("hidden");
+	}
+
+	$(document).on("click", "button.remove-image-old", function(){		
+		$(".uploads").append("<input type='hidden' name='remove_image["+ removeCtr +"]' value='"+ $(this).attr("id") +"'>");
+		removeCtr++;
+		$(this).parent().parent().remove();
+	});
+
+	$(document).on("click", "button.remove-image-new", function(){
+		$(this).parent().parent().remove();
+		ctr--;
+		$("#imagecount").val(Number(ctr));
+	});
+
+	function appendImageUpload(input, id){
+		$("#more-images").append('<div class="col-lg-4 col-md-4 file_upload"><input class="upload_photo" type="file" id="'+ctr+'" name="image['+ctr+']"><label class="m-0 p-0 w-100" id="lbl-'+ctr+'" for="'+ctr+'" tabindex=><div class="add_photo_div"><div class="add_photo_container"><div class="add_photo_container_middle"><i class="fas fa-plus img-center"></i><div class="text-gray mt-2"><span>Add photo</span></div></div></div></div></label><label class="image-label" for="'+ctr+'"><button id="close-'+ctr+'" type="button" class="close hidden remove-image-new"><span aria-hidden="true">&times;</span></button><img src="" id="photo-'+ctr+'-preview"></label><input class="form-control hidden caption hidden" placeholder="Add caption for this photo" type="text" name="caption['+ ctr +']" id="caption-'+ ctr +'"></div>');
+	}
+
+	$("#addroom").click(function(){
+		$("#addroomdiv").append('<div class="row mb-5"><div class="col-7"><div class="rooms m-0 room-card" id="room_container"><div class="card" id="card-1"><div class="card-header"><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">&#8369;</span></div><input type="number" name="room[1][amount]" id="room-amount-1" class="form-control text-center" min="0" value="0"><div class="input-group-append"><div class="input-group-append"><span class="input-group-text">per month</span></div></div></div></div><div class="card-body"><div class="form-group w-100"><div class="form-inline"><select class="form-control w-100" id="room-capacity-1" name="room[1][capacity]"><option>For 1 person</option><option>For 2 people</option><option>For 3 people</option><option>For 4 people</option><option>For 5 people</option><option>For 6 people</option><option>For 7 people</option><option>For 8 people</option><option>For 9 people</option><option>For 10 people</option></select></div></div><div class="form-group"><div class="form-inline"><div class="row"><div class="col-6"><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">Sofa Bed</span></div><input type="number" name="room[1][sofabed]" id="room-sofabed-1" class="form-control text-center" value="0"></div></div><div class="col-6"><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">Queen Size</span></div><input type="number" name="room[1][queensize]" id="room-queenzise-1" class="form-control text-center" value="0"></div></div></div><div class="row"><div class="col-6"><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">Single Bed</span></div><input type="number" name="room[1][singlebed]" id="room-singlebed-1" class="form-control text-center" value="0"></div></div><div class="col-6"><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">Double Decker</span></div><input type="number" name="room[1][doubledecker]" id="room-doubledecker-1" class="form-control text-center" value="0"></div></div></div><div></div></div></div><div class="form-group"><h5>Room Description</h5><textarea rows="5" id="room_description-1" name="room[1][description]" class="form-control form-control-lg" placeholder="Describe this room. What is difference of the room from the others?"></textarea></div><div class="form-group"><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">There are</span></div><input type="number" name="room[1][count]" id="room-count-1" class="form-control text-center" min="1" value="1"><div class="input-group-append"><span class="input-group-text">of this room in my dorm.</span></div></div></div><div class="form-group"><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">Utility bill is</span></div><select class="form-control" id="room-monthly-1" name="room[1][monthly]"><option>included on rent payment</option><option>not included on rent payment</option></select></div></div></div></div></div></div><div class="col-5"><div class="room-preview-update p-0" id="room_preview"><div class="container my-3"><h6 class="title-bold text-center">Added Rooms</h6><ul class="list-group" id="room_preview_list"></ul></div></div></div></div><input type="hidden" id="roomcount" name="roomcount" value="1"><input type="button" id="add_room" class="btn btn-outline-dark w-50 mt-8" value="Add More"><input type="button" id="save_edit" class="btn btn-outline-dark hidden w-50 mt-5" value="Save Changes">');
+		$(this).remove();
+		$.getScript("/assets/room.js");
+	});
+
+	$("#updateButton").click(function(){
+		$("#form_update").submit();
+	});
+
+</script>
+
+<% include ../partials/footer %>

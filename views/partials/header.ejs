@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Finding Dorm-E</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- PUBLIC ASSETS LINK -->
+		<link rel="stylesheet" type="text/css" href="/assets/app.css">
+		<link rel="stylesheet" type="text/css" href="/Bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="/PrettyCheckbox/pretty-checkbox.min.css">
+		<link rel="stylesheet" type="text/css" href="/EkkoLightbox/ekko-lightbox.css">
+		<link rel="stylesheet" href="/jQuery/jquery-ui.css">
+		<script type="text/javascript" src="/jQuery/jquery.js"></script>
+		<script type="text/javascript" src="/jQuery/jquery-ui.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script type="text/javascript" src="/PopperJS/popper.min.js"></script>
+		<script type="text/javascript" src="/Bootstrap/js/bootstrap.min.js"></script>
+		<script defer src="/FontAwesome/js/fontawesome-all.js"></script>
+		<!-- END PUBLIC ASSETS LINK -->
+
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-light bg-white py-0">
+			<div class="container">
+	 	 		<a class="navbar-brand" href="/">Finding Dorm-E</a>
+	  			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_menu">
+	    			<span class="navbar-toggler-icon"></span>
+	  			</button>
+
+				<div class="collapse navbar-collapse" id="navbar_menu">
+				    <ul class="navbar-nav ml-auto h-100 ">
+				    <% if(!currentUser){ %>
+				      	<li class="nav-item">
+				       		<a href="/signup" class="nav-link">Sign Up</a>
+				      	</li>
+				      	<li class="nav-item">
+				        	<a href="/login" class="nav-link">Login</a>
+				      	</li>
+				    <% }else{ %>
+					    <li class="nav-item mx-2 mt-1">
+					    	<a href="/message" class="nav-link">
+					    		<i class="fas fa-envelope fa-lg"></i>
+					    		<span class="badge bg-warning" id="numberofnewmessages"></span>
+					    	</a>
+					    </li>
+					    <% if(currentUser.user_type !== "Admin"){ %>
+						    <li class="nav-item mx-2 mt-1">
+						    	<a href="/dorm" class="nav-link">
+							    	<i class="fas fa-home fa-lg"></i>
+							    	<span class="badge bg-warning" id="numberofnewreservations"></span>
+							    </a>
+						    </li>
+						<% }else{ %>
+							<li class="nav-item mx-2 mt-1">
+						    	<a href="/admin" class="nav-link">
+							    	<i class="fas fa-user-secret fa-lg"></i>
+							    </a>
+						    </li>
+						<% } %>
+				      	<li class="nav-item dropdown ml-2">
+				      		<div class="btn-group">
+								<a href="#" class="nav-link" data-toggle="dropdown">
+								   <div class="img-circle-header" style="background-image: url('/images/user_images/<%= currentUser.photo %>')">
+									</div>
+								</a>
+								<div class="dropdown-menu dropdown-menu-right m-0">
+									<a class="dropdown-item" href="/profile/<%= currentUser.user_id %>">Edit Profile</a>
+								    <div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="/profile/<%= currentUser.user_id %>/password">Account</a>
+									<div class="dropdown-divider"></div>
+								   	<a href="/logout" class="dropdown-item" href="#">Logout</a>
+								</div>
+							</div>
+				      	</li>
+				    <% } %>
+				    </ul>
+				</div>
+			</div>
+		</nav>
+		<% if(successheader != "" || errorheader != ""){ %>
+		<div class="container mt-3">
+			<% if(successheader != ""){ %>
+			<div class="alert alert-success"><%= successheader %></div>
+			<% } %>
+			<% if(errorheader != ""){ %>
+			<div class="alert alert-danger"><%= errorheader %></div>
+			<% } %>
+		</div>
+		<% } %>

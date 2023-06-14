@@ -1,0 +1,177 @@
+<% include ../../partials/header %>
+	
+	<div class="container-fluid">
+		<div class="row">
+			<% include ../menu-partial %>
+        	<div class="col-12 col-md-9 pt-3">
+        		<div class="row mb-3">
+        			<div class="col-12 col-md-6 mb-3">
+        				<div class="card">
+        					<div class="card-header">
+        						<% var sum = 0; %>
+        						<% incomeEveryRooms.forEach(function(income){ %>
+        							<% sum += income.income %>
+        						<% }); %>
+        						<div class="container p-0">
+        							<div class="row">
+        								<div class="col-8">
+        									<h5 class="title-bold">Estimated Monthly income:</h5>
+        								</div>
+        								<div class="col-4">
+        									<h6 class="fde-text">&#8369;<%= (Number(sum)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %></h6>
+        								</div>
+        							</div>
+        						</div>
+        					</div>
+        				</div>
+        			</div>
+        			<div class="col-12 col-md-6">
+	        			<div class="card">
+							  <div class="card-header">
+							    <h5 class="title-bold">Number of Rooms and Slots Available</h5>
+							  </div>
+							  <div class="card-body">
+							  	<div class="container">
+							  		<div class="row">
+							  			<div class="col-7">
+							  				<h6 class="fs-subtitle">Number of Rooms: </h6>
+							  			</div>
+							  			<div class="col-5">
+							  				<h6 class="fde-text"><%= roomCount %> Rooms</h6>
+							  			</div>
+							  		</div>
+							  		<div class="row">
+							  			<div class="col-7">
+							  				<h6 class="fs-subtitle">Number of Available Slots: </h6>
+							  			</div>
+							  			<div class="col-45">
+							  				<h6 class="fde-text"><%= availableSlots %> Slots Available</h6>
+							  			</div>
+							  		</div>
+							  	</div>
+							  </div>
+						</div>
+					</div>
+        		</div>
+        		<div class="row mb-3">
+        			<div class="col-12 col-md-6 mb-3">
+        				<div class="card">
+						  	<div class="card-header">
+						    	<h5 class="title-bold">Number of Reservations this Year</h5>
+						  	</div>
+						  	<div class="card-body">
+						  		<form action="/dorm/<%= dorm.dorm_id %>/home" method="GET">
+							  		<select class="form-control w-50 mb-2" name="month" id="month">
+							  			<% var monthsArray = ["All Months", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; %>
+							  			<% monthsArray.forEach(function(monthIndex){ %>
+							  				<% if(month){ %>
+							  					<% if(month === monthIndex){ %>
+							  						<option selected><%= monthIndex %></option>
+							  					<% }else{ %>
+							  						<option><%= monthIndex %></option>
+							  					<% } %>
+							  				<% }else{ %>
+							  					<option><%= monthIndex %></option>
+							  				<% } %>
+							  			<% }); %>
+							  		</select>
+						  		</form>
+						  		<div class="container p-0">
+						  			<div class="row">
+						  				<div class="col-6">
+						  					<h6 class="fs-subtitle">Reservation Count: </h6>
+						  				</div>
+						  				<div class="col-6">
+						  					<h6 class="fde-text"><%= reservationCount[0].reservationCount %> Reservation request(s)</h6>
+						  				</div>
+						  			</div>
+						  		</div>
+						  	</div>
+						</div>
+					</div>
+					<div class="col-12 col-md-6">
+	        			<div class="card">
+							  <div class="card-header">
+							    <h5 class="title-bold">Number of Reviews</h5>
+							  </div>
+							  <div class="card-body">
+							  	<form action="/dorm/<%= dorm.dorm_id %>/home" method="GET">
+								  	<select class="form-control w-50 mb-2" name="rating" id="rating">
+								  		<% var ratingsArray = ["All Ratings", "0 Star", "1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"]; %>
+							  			<% ratingsArray.forEach(function(ratingIndex){ %>
+							  				<% if(rating){ %>
+							  					<% if(rating === ratingIndex){ %>
+							  						<option selected><%= ratingIndex %></option>
+							  					<% }else{ %>
+							  						<option><%= ratingIndex %></option>
+							  					<% } %>
+							  				<% }else{ %>
+							  					<option><%= ratingIndex %></option>
+							  				<% } %>
+							  			<% }); %>
+								  	</select>
+							  	</form>
+							  	<div class="container p-0">
+						  			<div class="row">
+						  				<div class="col-6">
+						  					<h6 class="fs-subtitle">Review Count: </h6>
+						  				</div>
+						  				<div class="col-6">
+						  					<h6 class="fde-text"><%= ratingCount[0].ratingCount %> Reviews</h6>
+						  				</div>
+						  			</div>
+						  		</div>
+							  	
+							  </div>
+						</div>
+					</div>
+        		</div>
+        		<div class="row">
+        			<div class="col-12">
+	        			<div class="card">
+							<div class="card-header">
+								<div class="container p-0">
+									<div class="row">
+										<div class="col-6">
+											<h5 class="title-bold">Dormitory Members</h5>
+										</div>
+										<div class="col-6">
+											<h6 class="fde-text"><%= members.length %> Member(s)</h6>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+							  	<div class="container p-0">
+							  		<div class="row">
+							  			<% members.forEach(member => { %>
+							  				<div class="col-6 col-md-2 center">
+							  					<div class="inline">
+										      		<a href="/profile/<%= member.user_id %>/about" class="profile-link">
+												      	<img src="/images/user_images/<%= member.photo %>" class="img-circular" style="height:50px">
+												      	<p class="text"><%= member.first_name %></p>
+												    </a>
+											    </div>
+							               	</div>
+						               <% }); %>    
+							  		</div>
+							  	</div>
+							</div>
+						</div>
+					</div>
+        		</div>
+        	</div>
+  		</div>
+	</div>
+
+<script type="text/javascript">
+	$("#month").change(function(){
+		$(this).parent().submit();
+	});
+
+	$("#rating").change(function(){
+		$(this).parent().submit();
+	});
+</script>
+	
+<% include ../../partials/footer %>

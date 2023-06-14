@@ -1,0 +1,143 @@
+<% include ../partials/header %>
+
+	<div class="index-form bg-light">
+		<div class="container p-5">
+			<h5 class="title-bold">Sign up for Finding Dorm-E</h5>
+			<small class="text-muted">Fields with * are required</small>
+			<form id="register_form" action="/signup" method="POST" class="mt-2">
+				<span id="registration_error" class="alert alert-danger"></span>
+				<div class="form-group">
+					<div class="input-group input-group">
+					    <input class="form-control" id="username" type="email" name="username" placeholder="Email Address *">
+					    <div class="input-group-append">
+							<span class="input-group-text"><i class="fas fa-envelope"></i></span>
+						</div>
+						<br>
+					</div>
+					<small id="username_error" class="error"></small>
+					<small class="form-text text-muted">
+						Please use your email in your paypal business account for transactions.
+					</small>
+				</div>
+				<div class="form-group">
+					<div class="input-group input-group">
+					    <input class="form-control" type="text" id="first_name" name="first_name" placeholder="First Name *">
+					    <div class="input-group-append">
+							<span class="input-group-text"><i class="fas fa-user"></i></span>
+						</div>
+					</div>
+					<small id="first_name_error" class="error"></small>
+				</div>
+				<div class="form-group">
+					<div class="input-group input-group">
+					    <input class="form-control" type="text" id="last_name" name="last_name" placeholder="Last Name *">
+					    <div class="input-group-append">
+							<span class="input-group-text"><i class="fas fa-user"></i></span>
+						</div>
+					</div>
+					<small id="last_name_error" class="error"></small>
+				</div>
+				<div class="form-group">
+					<div class="input-group input-group">
+					    <input class="form-control" id="password" type="password" name="password" placeholder="Password *">
+					    <div class="input-group-append">
+							<span class="input-group-text"><i class="fas fa-lock"></i></span>
+						</div>
+					</div>
+					<small id="password_error" class="error"></small>
+					<small class="form-text text-muted">
+						Your password must be atleast 8 characters long, and must not contain spaces, special characters, or emoji.
+					</small>
+				</div>
+				<div class="form-group">
+					<div class="input-group input-group">
+					    <input class="form-control" id="confirm_password" type="password" name="confirm_password" placeholder="Confirm Password *">
+					    <div class="input-group-append">
+							<span class="input-group-text"><i class="fas fa-lock"></i></span>
+						</div>
+					</div>
+					<small id="password_confirm_error" class="error"></small>
+				</div>
+				<div class="form-group">
+					<div class="input-group input-group">
+						<input class="form-control" id="contact" type="number" name="contact" placeholder="Contact Number" max="999999999">
+						<div class="input-group-append">
+							<span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<textarea class="form-control" id="self_description" name="self_description" placeholder="Tell us something about yourself."></textarea>
+				</div>
+				<div class="form-group">
+					<h6>Birthdate *</h6>
+					<div class="form-inline">
+						<div class="container">
+						    <div class="row">
+								<div class="col-lg-4 col-sm-4">
+									<select class="form-control w-100" id="month" name="month">
+									    <option>Month</option>
+									    <option>January</option>
+									    <option>February</option>
+									    <option>March</option>
+									    <option>April</option>
+									    <option>May</option>
+									    <option>June</option>
+									    <option>July</option>
+									    <option>August</option>
+									    <option>September</option>
+									    <option>October</option>
+									    <option>November</option>
+									    <option>December</option>
+									</select>
+									<small id="month_error" class="error">Please select your birth month.</small>
+								</div>
+								<div class="col-lg-4 col-sm-4">
+									<select class="form-control w-100" id="day" name="day">
+									    <option>Day</option>
+									    <% for(var i = 1; i <= 31; i++){ %>
+									    <option><%= i %></option>
+									    <% } %>
+									</select>
+									<small id="day_error" class="error">Please select your birth day.</small>
+								</div>
+								<div class="col-lg-4 col-sm-4">
+									<select class="form-control w-100" id="year" name="year">
+									    <option>Year</option>
+									    <% for(var i = 2005; i >= 1975; i--){ %>
+									    <option><%= i %></option>
+									    <% } %>
+									</select>
+									<small id="year_error" class="error">Please select your birth year.</small>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-inline form-group">
+					<div class="container">
+					    <div class="row">
+							<div class="col-lg-6 col-sm-12">
+								<h6 class="mr-2">Sign Up As *</h6>
+								<select class="form-control w-100" id="user_type" name="user_type">
+								    <option>Tenant</option>
+								    <option>Dorm Owner</option>
+								</select>
+							</div>
+							<div class="col-lg-6 col-sm-12">
+								<h6 class="mr-2">I Am *</h6>
+								<select class="form-control w-100" id="gender" name="gender">
+								    <option>Male</option>
+								    <option>Female</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button id="signup" type="button" class="btn btn-danger btn-block mb-2">Sign Up</button>
+				<small class="float-right">Have an account? <a href="/login">Sign In</a></small>
+			</form>
+		</div>
+	</div>
+
+<% include ../partials/footer %>

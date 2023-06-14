@@ -1,0 +1,34 @@
+<% include ../partials/header %>
+	
+	<div class="index-form bg-light">
+		<div class="container p-5">
+			<h5 class="title-bold">Login to Finding Dorm-E</h5>
+			<small class="text-muted">All fields are required</small>
+			<form id="login_form" action="/login" method="POST" class="mt-2">
+				<span id="login_error" class="alert alert-danger"></span>
+				<div class="form-group">
+					<div class="input-group input-group">
+					    <input class="form-control" id="username_login" type="email" name="username" placeholder="Email Address">
+					    <div class="input-group-append">
+							<span class="input-group-text"><i class="fas fa-envelope"></i></span>
+						</div>
+					</div>
+					<small id="username2_error" class="error"></small>
+				</div>
+				<div class="form-group">
+					<div class="input-group input-group">
+					    <input class="form-control" id="password_login" type="password" name="password" placeholder="Password">
+					    <div class="input-group-append">
+							<span class="input-group-text"><i class="fas fa-lock"></i></span>
+						</div>
+					</div>
+					<small id="password2_error" class="error"></small>
+				</div>
+				<button id="login" type="button" class="btn btn-danger btn-block mb-2">Login</button>
+				<small class="float-right">New to Finding Dorm-E? <a href="/signup">Sign Up</a></small>
+				<input type="hidden" name="referer" value= <%= referer %> >
+			</form>
+		</div> 
+	</div>
+
+<% include ../partials/footer %>

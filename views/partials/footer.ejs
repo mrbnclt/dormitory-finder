@@ -1,0 +1,40 @@
+	<script type="text/javascript">
+		<% if(currentUser){ %>
+			setInterval(function(){
+
+				$.ajax({
+					type:"GET",
+					url:"/message/<%= currentUser.user_id %>/count",
+					success: function(result){
+						if(result != "none"){
+							$("#numberofnewmessages").text(result.length);
+						}else{
+							$("#numberofnewmessages").text("");
+						}		
+					}
+				});
+
+			}, 500);
+
+			setInterval(function(){
+
+				$.ajax({
+					type:"GET",
+					url:"/reservation/<%= currentUser.user_id %>/updates",
+					success: function(result){
+						if(result != "none"){
+							$("#numberofnewreservations").text(result.length);
+						}else{
+							$("#numberofnewreservations").text("");
+						}
+					}
+				});
+
+			}, 500);
+
+		<% } %>
+	</script>
+
+	<script type="text/javascript" src="/assets/app.js"></script>
+	</body>
+</html>

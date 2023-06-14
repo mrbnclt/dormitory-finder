@@ -1,0 +1,54 @@
+<% include ../partials/header %>
+
+	<div class="container my-4">
+		<div class="row">
+			<div class="col-12 col-md-3">
+				<div class="container">
+					<div class="row">
+						<div class="col-4 col-md-12 center mb-3">
+							<a class="h6" href="/profile/<%= user_id %>">Edit Profile</a>
+						</div>
+						<div class="col-4 col-md-12 center mb-3">
+							<a class="h6 active" href="/profile/<%= user_id %>/photo">Photo</a>
+						</div>
+						<div class="col-4 col-md-12 center mb-3">
+							<a class="h6" href="/profile/<%= user_id %>/password">Security</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-9">
+				<div class="container">
+					<div class="card">
+						<div class="card-header">
+							<h6 class="title-bold">User Photo</h6>
+						</div>
+						<div class="card-body">
+							<% if(success != ""){ %>
+							<div class="alert alert-success"><%= success %></div>
+							<% } %>
+							<% if(error != ""){ %>
+							<div class="alert alert-success"><%= error %></div>
+							<% } %>
+							<form enctype="multipart/form-data" action="/profile/<%= user_id %>/photo?_method=PUT" method="POST"> 
+								<div class="container">
+									<div class="row mb-4">
+										<div class="col-12 col-md-4">
+											<div class="img-circle" style="background-image: url('/images/user_images/<%= currentUser.photo %>')">
+											</div>
+										</div>	
+										<div class="col-12 col-md-8">
+											<p>Choose a photo of yours with a clear frontal shot to help other people know you better.</p>
+											<input type="file" id="user_photo" name="user_photo" accept="image/*">
+										</div>
+									</div>
+									<button id="photo" class="btn btn-little-black" type="submit">Update Photo</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+<% include ../partials/footer %>

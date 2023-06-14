@@ -1,0 +1,138 @@
+<% include ../partials/header %>
+	
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 col-md-3"> 
+			    <nav id="sidebar2">
+			         <ul class="list-unstyled components">
+			            <li class="sidebar-header p-0 center mb-5">
+			                <img src="/images/user_images/<%= admin.photo %>" style="width:150px;border-radius:5px">
+			                <h5 class="mt-3"><%= admin.profile.first_name + " " + admin.profile.last_name %></h5>
+			            </li>
+			        </ul>
+			    </nav>
+			</div>
+			<div class="col-12 col-md-9">
+				<h3 class="fs-title">Verification Needed</h3>
+				<% if(list.length > 0){ %>
+					<div class="row">
+						<% list.forEach(function(dorm){ %>
+							<div class="col-12 col-md-3 mb-4">
+								<div id="<%= dorm.dorm_id %>" class="carousel slide" data-interval="false">
+									<div class="carousel-inner corner-curved">
+										<% var counter = 0;%>
+										<% dorm.dorm_images.forEach(function(image){ %>
+											<% if(counter < 1){ %>
+												<div class="carousel-item active">
+													<img class="d-block w-100" src="/images/dorm_images/<%= image.image %>" style="max-height: 250px">
+												</div>
+												<% counter++; %>
+											<% }else{ %>
+												<div class="carousel-item">
+													<img class="d-block w-100" src="/images/dorm_images/<%= image.image %>" style="max-height: 250px">
+												</div>
+											<% } %>
+										<% }); %>
+										</div>
+										<a class="carousel-control-prev" href="#<%= dorm.dorm_id %>" role="button" data-slide="prev">
+											<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+										</a>
+										<a class="carousel-control-next" href="#<%= dorm.dorm_id %>" role="button" data-slide="next">
+											<span class="carousel-control-next-icon" aria-hidden="true"></span>
+										</a>
+								</div>
+								<a href="/listing/<%= dorm.dorm_id %>" target="_blank">
+									<div class="card-body p-0 mt-2">
+										<h6 class="search-text-title m-0"><%= dorm.dorm_name %></h6>
+										<small class="block search-text"><i class="fas fa-map-marker-alt"></i> <%= dorm.address_dorm.dorm_complete_loc %></small>
+										<small class="search-text"><i class="fa fa-user"></i> <%= dorm.roomslots[0].slots %>/<%=dorm.availableslots[0].allslots %> Slots Available</small>
+										<hr class="m-1">
+										<span class="search-text-footer">
+											&#8369;<%= (Number(dorm.avgrent[0].avgrent)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %>	
+										</span>
+										<span class="search-text-footer">average rent a month</span>
+										<div>
+											<% var averagerating = 0 %>
+											<% for(var i = 0; i < 5; i++){ %>
+												<% if(i < dorm.averagerating[0].averagerating){ %>
+													<% averagerating = dorm.averagerating[0].averagerating; %>
+												  	<img src="/images/static/star-on.png" class="rating-listing">
+												<% }else{ %>
+													<img src="/images/static/star-off.png" class="rating-listing">
+												<% } %>
+											<% } %>
+											<small class="search-text-footer"><%= Math.trunc(Math.floor(averagerating)) %> Stars - <%= dorm.countedreviews %> Reviews</small>
+										</div>
+									</div>
+								</a>
+							</div>
+						<% }); %>
+					</div>
+				<% }else{ %>
+					<div class="row">
+						<div class="container">
+							<h1 class="title-bold">All dormitories have been verified.</h1>
+						</div>
+						
+					</div>
+				<% } %>
+				<hr>
+				<h3 class="fs-title">Verified Dormitories</h3>
+				<div class="row">
+					<% verified.forEach(function(dorm){ %>
+						<div class="col-12 col-md-3 mb-4">
+							<div id="<%= dorm.dorm_id %>" class="carousel slide" data-interval="false">
+								<div class="carousel-inner corner-curved">
+									<% var counter = 0;%>
+									<% dorm.dorm_images.forEach(function(image){ %>
+										<% if(counter < 1){ %>
+											<div class="carousel-item active">
+												<img class="d-block w-100" src="/images/dorm_images/<%= image.image %>" style="max-height: 250px">
+											</div>
+											<% counter++; %>
+										<% }else{ %>
+											<div class="carousel-item">
+												<img class="d-block w-100" src="/images/dorm_images/<%= image.image %>" style="max-height: 250px">
+											</div>
+										<% } %>
+									<% }); %>
+									</div>
+									<a class="carousel-control-prev" href="#<%= dorm.dorm_id %>" role="button" data-slide="prev">
+										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									</a>
+									<a class="carousel-control-next" href="#<%= dorm.dorm_id %>" role="button" data-slide="next">
+										<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									</a>
+							</div>
+							<a href="/listing/<%= dorm.dorm_id %>" target="_blank">
+								<div class="card-body p-0 mt-2">
+									<h6 class="search-text-title m-0"><%= dorm.dorm_name %></h6>
+									<small class="block search-text"><i class="fas fa-map-marker-alt"></i> <%= dorm.address_dorm.dorm_complete_loc %></small>
+									<small class="search-text"><i class="fa fa-user"></i> <%= dorm.roomslots[0].slots %>/<%=dorm.availableslots[0].allslots %> Slots Available</small>
+									<hr class="m-1">
+									<span class="search-text-footer">
+										&#8369;<%= (Number(dorm.avgrent[0].avgrent)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %>	
+									</span>
+									<span class="search-text-footer">average rent a month</span>
+									<div>
+										<% var averagerating = 0 %>
+										<% for(var i = 0; i < 5; i++){ %>
+											<% if(i < dorm.averagerating[0].averagerating){ %>
+												<% averagerating = dorm.averagerating[0].averagerating; %>
+											  	<img src="/images/static/star-on.png" class="rating-listing">
+											<% }else{ %>
+												<img src="/images/static/star-off.png" class="rating-listing">
+											<% } %>
+										<% } %>
+										<small class="search-text-footer"><%= Math.trunc(Math.floor(averagerating)) %> Stars - <%= dorm.countedreviews %> Reviews</small>
+									</div>
+								</div>
+							</a>
+						</div>
+					<% }); %>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<% include ../partials/footer %>

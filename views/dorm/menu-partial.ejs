@@ -1,0 +1,58 @@
+<div class="col-12 col-md-3"> 
+    <nav id="sidebar2">
+         <ul class="list-unstyled components">
+            <li class="sidebar-header p-0 center mb-5">
+                <img src="/images/dorm_images/<%= dorm.dorm_images[0].image %>" style="width:250px;border-radius:5px">
+                <h5 class="mt-3"><%= dorm.dorm_name %></h5>
+                <a href="/listing/<%= dorm.dorm_id %>" class="btn btn-outline-info" target="_blank">View/Edit Listing</a>
+            </li>
+            <% if(selected === "home"){ %>
+                <li class="selected-menu">
+                    <a href="#"><i class="fas fa-home mr-3"></i>Home</a>
+                </li>
+            <% }else{ %>
+                <li>
+                    <a href="/dorm/<%= dorm_id %>/home"><i class="fas fa-home mr-3"></i>Home</a>
+                </li>
+            <% } %>
+            <% if(selected === "rooms"){ %>
+                <li class="selected-menu">
+                    <a href="#"><i class="fas fa-users mr-3"></i>Rooms</a>
+                </li>
+            <% }else{ %>
+                <li>
+                    <a href="/dorm/<%= dorm_id %>/rooms"><i class="fas fa-users mr-3"></i>Rooms</a>
+                </li>
+            <% } %>
+            <% if(selected === "reservation"){ %>
+                <li class="selected-menu">
+                    <a href="#"><i class="fas fa-calendar-check mr-3"></i>
+                        Reservations
+                    </a>
+                </li>
+            <% }else{ %>
+                <li>
+                    <a href="/dorm/<%= dorm_id %>/reservation"><i class="fas fa-calendar-check mr-3"></i>
+                        Reservations
+                        <% if(reservationupdates != 0){ %>
+                            <span class="badge bg-warning"><%= reservationupdates %></span>
+                        <% } %>
+                    </a>
+                </li>
+            <% } %>
+            <% if(selected === "reviews"){ %>
+                <li class="selected-menu">
+                    <a href="#"><i class="fas fa-calendar-check mr-3"></i>
+                        Reviews
+                    </a>
+                </li>
+            <% }else{ %>
+                <li>
+                    <a href="/dorm/<%= dorm_id %>/reviews"><i class="fas fa-calendar-check mr-3"></i>
+                        Reviews
+                    </a>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

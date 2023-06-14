@@ -1,0 +1,574 @@
+<% include ../partials/header %>
+
+<div class="container mt-3 mb-5">
+	<div class="row">
+		<div class="col-12 col-lg-3 mb-2 w-100">
+				<% if(currentUser && currentUser.user_id === dorm.owner_user_id){ %>
+					<div class="owner-div round-corner text-center">
+						<h6 class="title-bold">You own this dormitory</h6>
+						<img src="/images/user_images/<%= ownerName.photo %>" style="height:100px; width:100px;" class="img-circle">
+						<br>
+						<a href="/listing/<%= dorm.dorm_id %>/update" class="btn btn-danger mt-2 w-100">Edit Dormitory Information</a>
+					</div>
+				<% }else{ %>
+					<div class="owner-div round-corner text-center">
+						<h6 class="title-bold">Owned By <%= ownerName.profile.first_name %></h6>
+						<img src="/images/user_images/<%= ownerName.photo %>" style="height:100px; width:100px;"  class="img-circle">
+						<br>
+						<small class="title-bold"><%= ownerName.profile.contact %></small>
+						<br>
+						<form action="/message/new" method="GET">
+							<input type="hidden" name="dorm_id" value="<%= dorm.dorm_id %>">
+							<button class="btn btn-outline-secondary mt-2 w-100" <% if(currentUser)if(currentUser.user_type == "Dorm Owner"){ %> disabled <% } %>>Message Owner</button>
+						</form>
+						<a target="_blank" href="/profile/<%= dorm.owner_user_id %>/about" class="btn btn-outline-info mt-2 w-100">View Owner Profile</a>					
+					</div>
+					<% if((currentUser && currentUser.user_type != "Admin") || !(currentUser)){ %>
+						<div class="reserve-div round-corner center">
+							<span class="title-bold">&#8369;<%= (Number(average[0].average)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %></span>
+							<span class="payment-time">average rent per Person a Month</span>
+							<br>
+							<small class="text-muted">(must pay <%= dorm.dorm_advance_payment %> month(s) in advance to reserve)</small>
+							<small class="text-muted">With a deposit of &#8369;<%= (Number(dorm.dorm_deposit)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %></small>
+							<hr>
+							<div class="form-group">
+								<button <% if(currentUser)if(currentUser.user_type == "Dorm Owner"){ %> disabled <% } %> class="btn btn-danger w-100" data-toggle="modal" data-target="#reserve-modal">Reserve</button>
+							</div>
+						</div>
+						<div class="reserve-div round-corner center">
+							<% if(dorm.dorm_verified == 1){ %>
+								<h1 class="verified"><i class="fas fa-check"></i></h1>
+								<h4>This dormitory has been verified by the admins.</h4>
+							<% }else{ %>
+								<h1 class="not-verified"><i class="fas fa-times"></i></h1>
+								<h4>This dormitory is not yet verified by the admins.</h4>
+							<% } %>
+						</div>
+					<% }else{ %>
+						<div class="reserve-div round-corner center">
+							<% if(dorm.dorm_verified == 1){ %>
+								<h1 class="verified"><i class="fas fa-check"></i></h1>
+								<h4>This dormitory is already verified.</h4>
+							<% }else{ %>
+								<h1 class="not-verified"><i class="fas fa-times"></i></h1>
+								<h4>Not yet verified.</h4>
+								<button class="btn btn-info mb-2" data-toggle="modal" data-target="#requiredDocuments">View Documents</button>
+								<form action="/dorm/<%= dorm.dorm_id %>/verify" method="POST">
+									<button class="btn btn-success">Verify Dormitory</button>
+								</form>
+							<% } %>
+						</div>
+					<% } %>
+				<% } %>
+		</div>
+		<div class="col-12 col-lg-9">
+			<div class="modal fade" id="gallery" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog gallery-div" role="document">
+			    	<div class="modal-content gallery-background">
+			    		<div id="indicators2" class="carousel slide" data-ride="carousel">
+  							<div class="carousel-inner">
+  								<% var first = 1; %>
+  								<% dorm.dorm_images.forEach(function(image){ %>
+  									<% if(first === 1){ %>
+	  									<div class="carousel-item active">
+									      	<img class="gallery-images" src="/images/dorm_images/<%= image.image%>">
+									      	<p class="px-3 pb-3 gallery-caption m-0 center"><%= image.caption %></p>
+									    </div>
+									    <% first++; %>
+									<% }else{ %>
+										<div class="carousel-item">
+									      	<img class="gallery-images" src="/images/dorm_images/<%= image.image%>">
+									      	<p class="px-3 pb-3 gallery-caption m-0 center"><%= image.caption %></p>
+									    </div>
+									<% }%>
+								<% }); %>
+							</div>
+  							<a class="carousel-control-prev" href="#indicators2" role="button" data-slide="prev">
+							    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  							</a>
+							<a class="carousel-control-next" href="#indicators2" role="button" data-slide="next">
+							    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+							</a>
+						</div>
+					</div>
+  				</div>
+			</div>
+			<div class="modal fade" id="requiredDocuments" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog gallery-div" role="document">
+			    	<div class="modal-content gallery-background">
+			    		<div id="indicators" class="carousel slide" data-ride="carousel">
+  							<div class="carousel-inner">
+  								<% var first = 1; %>
+  								<% dorm.dorm_documents.forEach(function(image){ %>
+  									<% if(first === 1){ %>
+	  									<div class="carousel-item active">
+									      	<img class="gallery-images" src="/images/dorm_images/<%= image.image%>">
+									      	<p class="px-3 pb-3 gallery-caption m-0 center"><%= image.caption %></p>
+									    </div>
+									    <% first++; %>
+									<% }else{ %>
+										<div class="carousel-item">
+									      	<img class="gallery-images" src="/images/dorm_images/<%= image.image%>">
+									      	<p class="px-3 pb-3 gallery-caption m-0 center"><%= image.caption %></p>
+									    </div>
+									<% }%>
+								<% }); %>
+							</div>
+  							<a class="carousel-control-prev" href="#indicators" role="button" data-slide="prev">
+							    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  							</a>
+							<a class="carousel-control-next" href="#indicators" role="button" data-slide="next">
+							    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+							</a>
+						</div>
+					</div>
+  				</div>
+			</div>
+			<div class="img-thumbnail">
+				<img class="round-corner listing-image" src="/images/dorm_images/<%= dorm.dorm_images[0].image %>">
+				<button class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#gallery">View Gallery</button>
+				<div class="caption-full">
+					<h4><a><%= dorm.dorm_name %></a></h4>
+					<div class="small-info mt-4">
+						<div class="row">
+							<div class="col-6 col-lg-3 mb-2">
+								<span style="text-overflow:ellipsis"><i class="fas fa-building"></i> <%= dorm.dorm_storey %> / <%= dorm.dorm_type %></span>
+							</div>
+							<div class="col-6 col-lg-3 mb-2">
+								<span><i class="fas fa-transgender"></i> <%= dorm.dorm_gender %></span>
+							</div>
+							<div class="col-6 col-lg-3">
+								<span><i class="fas fa-map-marker-alt"></i> <%= dorm.address_dorm.dorm_complete_loc %></span>
+								</div>
+							<div class="col-6 col-lg-3">
+								<span><img src="/images/svg/026-bathroom.svg" class="svg"> <%= dorm.dorm_bathroom %> Bathroom(s)</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr>
+			<div class="card no-border bg-light mt-2">
+				<div class="summary">
+					<span><%= dorm.dorm_summary%></span>
+				</div>
+				<div class="more" id="more-dorm-about">
+					<div class="title">
+						<span>About the dorm</span>
+					</div>				
+					<div class="about">
+						<span><%= dorm.dorm_about %></span>
+					</div>
+					<div class="title">
+						<span>What you can access</span>
+					</div>
+					<div class="access">
+						<span><%= dorm.dorm_access %></span>
+					</div>
+					<% if(dorm.dorm_note){ %>
+						<div class="title">
+							<span>Other things to note</span>
+						</div>
+						<div class="access">
+							<span><%= dorm.dorm_note %></span>
+						</div>
+					<% } %>
+				</div>
+				<button class="my-3 readmore" id="readmoredorm">Read more about this dorm  <i class="fas fa-angle-down"></i></button>
+				<hr>
+				<h6 class="title-bold">Amenities</h6>
+				<% if(dorm.dorm_amenity.dorm_wifi || dorm.dorm_amenity.dorm_closetdrawers || dorm.dorm_amenity.dorm_tv || dorm.dorm_amenity.dorm_aircon || dorm.dorm_amenity.dorm_iron || dorm.dorm_amenity.dorm_kitchen || dorm.dorm_amenity.dorm_washingmachine || dorm.dorm_amenity.dorm_fireext || dorm.dorm_amenity.cctv){ %>
+					<div class="rules mt-2">
+						<% if(dorm.dorm_amenity.dorm_wifi){ %>
+							<p><img src="/images/svg/wifi.svg" class="mr-3 svg">WiFi</p>
+						<% } %>
+						<% if(dorm.dorm_amenity.dorm_closetdrawers){ %>
+							<p><img src="/images/svg/010-no-smoking.svg" class="mr-3 svg">Closet/Drawers</p>
+						<% } %>
+						<% if(dorm.dorm_amenity.dorm_tv){ %>
+							<p><img src="/images/svg/001-television.svg" class="mr-3 svg">TV</p>
+						<% } %>
+						<% if(dorm.dorm_amenity.dorm_aircon){ %>
+							<p><img src="/images/svg/020-air-conditioning.svg" class="mr-3 svg">Air Conditioning</p>
+						<% } %>
+						<% if(dorm.dorm_amenity.dorm_iron){ %>
+							<p><img src="/images/svg/032-iron.svg" class="mr-3 svg">Iron</p>
+						<% } %>
+						<% if(dorm.dorm_amenity.dorm_kitchen){ %>
+							<p><img src="/images/svg/010-no-smoking.svg" class="mr-3 svg">Kitchen</p>
+						<% } %>
+						<% if(dorm.dorm_amenity.dorm_washingmachine){ %>
+							<p><img src="/images/svg/002-laundry.svg" class="mr-3 svg">Washing Machine</p>
+						<% } %>
+					</div>
+				<% }else{ %>
+					<div class="about">
+						<span>No amenities to offer</span>
+					</div>
+				<% } %>
+				<% if(dorm.dorm_amenity.dorm_fireext || dorm.dorm_amenity.cctv){ %>
+					<h6 class="title-bold">Safety Amenities</h6>
+					<div class="rules mt-2">
+						<% if(dorm.dorm_amenity.dorm_fireext){ %>
+							<p><img src="/images/svg/fire-extinguisher.svg" class="mr-3 svg">Fire Extinguisher</p>
+						<% } %>
+					</div>
+					<div class="rules mt-2">
+						<% if(dorm.dorm_amenity.dorm_cctv){ %>
+							<p><img src="/images/svg/cctv.svg" class="mr-3 svg">Security Cameras/CCTV</p>
+						<% } %>
+					</div>
+				<% } %>
+				<% if(dorm.dorm_amenity.dorm_more_amenities){ %>
+					<div class="more" id="more-amenities">
+						<hr class="w-25 ml-0">
+						<h6 class="title-bold">More Amenities</h6>
+						<%= dorm.dorm_amenity.dorm_more_amenities %>
+					</div>
+					<button class="my-3 readmore" id="readmoreamenities">Read more amenities  <i class="fas fa-angle-down"></i></button>
+				<% } %>
+				<hr>
+				<h6 class="title-bold">House Rules</h6>
+				<div class="rules mt-3">
+					<% var smoking, pets, parties;%>
+					<% if(!dorm.dorm_rule.dorm_smoking){ %>
+						<% smoking = "not-allowed"; %>
+					<% } %>
+					<% if(!dorm.dorm_rule.dorm_pets){ %>
+						<% pets = "not-allowed"; %>
+					<% } %>
+					<% if(!dorm.dorm_rule.dorm_parties){ %>
+						<% parties = "not-allowed"; %>
+					<% } %>
+					<p class="<%= smoking %>"><img src="/images/svg/smoking.svg" class="mr-3 svg">Smoking Allowed</p>
+					<p class="<%= pets %>"><i class="fas fa-paw mr-4"></i>Pets Allowed</p>
+					<p class="<%= parties %>"><i class="fas fa-paw mr-4 <%= parties %>"></i>Parties Allowed</p>
+				</div>
+				<% if(dorm.dorm_rule.dorm_more_rules){ %>
+					<div class="more" id="more-rules">
+						<hr class="w-25 ml-0">
+						<h6 class="title-bold">More Rules</h6>
+						<%= dorm.dorm_rule.dorm_more_rules %>
+					</div>
+					<button class="my-3 readmore" id="readmorerule">Read more rules  <i class="fas fa-angle-down"></i></button>
+				<% } %>
+				<hr>
+				<h6 class="title-bold text-left">Room Arrangements: </h6>
+				<span class="search-text-list-location inline"><i class="fa fa-user"></i> <%= numberofslots[0].slots %>/<%=availableslots[0].allslots %> Slots Available</span>
+				<div class="rooms">
+					<% room.forEach(room => { %>
+						<a href="" data-toggle="modal" data-target="#<%= room.room_id %>">
+							<div class="room">
+								<i class="fas fa-bed fa-lg"></i>
+								<h6 class="mt-3 title-bold"><%= room.room_name %></h6>
+								<h6><small class="search-text-list-location"><i class="fa fa-user"></i> <%= room.availableslots %>/<%= room.numberofslots %> Slots Available</small></h6>
+								<h6><small class="search-text-list-location"><i class="fas fa-transgender"></i> <%= room.room_gender %></small></h6>
+							</div>
+						</a>
+						<div class="modal fade" id="<%= room.room_id %>" tabindex="-1" role="dialog">
+						  	<div class="modal-dialog modal-dialog-centered" role="document">
+						  		<div class="container-fluid">
+							    	<div class="modal-content">
+							    		<div class="modal-header">
+							    			<h5 class="modal-title"><%= room.room_name %></h5>
+							    			<span class="ml-auto title-bold my-auto">
+							    				&#8369;<%= (Number(room.room_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %>
+							    				per Person a Month
+							    			</span>
+								      		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								          		<span aria-hidden="true">&times;</span>
+									        </button>
+									    </div>
+							      		<div class="modal-body">
+							      			<h6 class="title-bold">Slots:</h6>
+							      			<div class="slots">
+							      				<% room.room_slots.forEach(slot => { %>
+							      					<% if(slot.room_id == room.room_id){ %>
+							      						<% if(slot.occupant_id == null){ %>
+							      							<div class="inline">
+								      							<img src="/images/static/no_occupant.png" height="40px">
+								      							<p>Vacant</p>
+								      						</div>
+							      						<% }else{ %>
+							      							<% for(let occu of occupant){ %>
+							      								<% if(slot.occupant_id == occu.user_id){ %>
+							      									<div class="inline">
+								      									<img src="/images/static/occupied.png" class="img-circular">
+								      									<p>Occupied</p>
+								      								</div>
+								      								<% break; %>
+							      								<% } %>
+							      							<% } %>
+							      						<% } %>
+							      					<% } %>
+							      				<% }); %>
+							      			</div>
+							      			<hr>
+							      			<h6 class="title-bold">Gender:</h6>
+							      			<h6><small class="search-text-list-location"><i class="fas fa-transgender"></i> <%= room.room_gender %></small></h6>
+							      			<hr>
+							      			<div class="container p-0">
+							      				<div class="row">
+							      					<div class="col-6">
+							      						<h6 class="title-bold">Queen Size Bed</h6>
+							      						<h6><small class="search-text-list-location"><%= room.queensize %></small></h6>
+							      					</div>
+							      					<div class="col-6">
+							      						<h6 class="title-bold">Single Bed</h6>
+							      						<h6><small class="search-text-list-location"><%= room.singlebed %></small></h6>
+							      					</div>
+							      				</div>
+							      				<div class="row">
+							      					<div class="col-6">
+							      						<h6 class="title-bold">Double Decker</h6>
+							      						<h6><small class="search-text-list-location"><%= room.doubledecker %></small></h6>
+							      					</div>
+							      					<div class="col-6">
+							      						<h6 class="title-bold">Sofa Bed</h6>
+							      						<h6><small class="search-text-list-location"><%= room.sofabed %></small></h6>
+							      					</div>
+							      				</div>
+							      			</div>
+							      			<hr>
+							      			<h6 class="title-bold">Room Description</h6>
+							      			<div class="about">
+							      				<% if(room.room_description){ %>
+									      			<p class="p-3"><%= room.room_description %></p>
+									      		<% }else{ %>
+									      			<p class="p-3">No description stated.</p>
+									      		<% } %>
+							      			</div>
+							      			<hr>
+							      			<h6 class="title-bold">Advance Payment: <span class="about"><%= dorm.dorm_advance_payment %> months</span></h6>
+							      			<h6 class="title-bold">Utility Bill: <span class="about"><%= room.room_utility %></span></h6>
+							      		</div>
+							    	</div>
+							    </div>
+						  	</div>
+						</div>
+					<% }); %>
+				</div>
+				<hr>
+				<h6 class="title-bold">About the neighborhood</h6>
+				<% if(dorm.dorm_about_neight){ %>
+					<div class="about">
+						<span><%= dorm.dorm_about_neigh %></span>
+					</div>
+				<% }else{ %>
+					<div class="about">
+						<span>No information given.</span>
+					</div>
+				<% } %>
+				<% if(dorm.dorm_how_neigh){ %>
+					<div class="about">
+						<h6 class="title-bold">How to get around</h6>
+						<span><%= dorm.dorm_how_neigh %></span>
+					</div>
+				<% } %>
+				<hr>
+				<h6 class="title-bold">Location</h6>
+				<div class="about">
+					<span><%= dorm.address_dorm.dorm_complete_loc %></span>
+				</div>
+				<input type="hidden" name="lat" id="lat" value="<%= dorm.address_dorm.dorm_lat %>">
+				<input type="hidden" name="lng" id="lng" value="<%= dorm.address_dorm.dorm_long %>"> 
+				<div id="map" class="mapshow">
+				</div>
+				<span class="span-text">
+					<i class="fas fa-map-marker-alt"></i> Exact address will be provided upon confirmed reservation.
+				</span>
+				
+			</div>
+			<hr>
+			<h6 class="title-bold py-auto">Reviews and Comments (
+				<% for(var i = 0; i < 5; i++){ %>
+					<% if(i < Math.trunc(Math.floor(averagerating[0].averagerating))){ %>
+						<img src="/images/static/star-on.png" class="rating-star">
+					<% }else{ %>
+						<img src="/images/static/star-off.png" class="rating-star">
+					<% } %>
+				<% } %>
+				<%= Math.trunc(Math.floor(averagerating[0].averagerating)) %> Stars - <%= numberofreviews %> review)
+			</h6>
+			<div class="card border-none bg-light" id="reviewForm">
+				<% if(showReviewForm){ %>
+					<label class="text-muted mt-3">Write your own review below.</label>
+					<form method="POST" action="/listing/<%= dorm.dorm_id %>/rating/new">
+						<div class="form-group mb-0">
+							<h6 class="inline mb-0">Rate this Dormitory:</h6>
+							<span class="rating">
+						        <input id="rating5" type="radio" name="rating" value="5">
+						        <label for="rating5">5</label>
+						        <input id="rating4" type="radio" name="rating" value="4">
+						        <label for="rating4">4</label>
+						        <input id="rating3" type="radio" name="rating" value="3">
+						        <label for="rating3">3</label>
+						        <input id="rating2" type="radio" name="rating" value="2">
+						        <label for="rating2">2</label>
+						        <input id="rating1" type="radio" name="rating" value="1">
+						        <label for="rating1">1</label>
+						    </span>
+						</div>
+						<div class="form-group">
+							<h6 class="inline mb-0">Comment:</h6>
+							<textarea rows="4" class="form-control" name="comment" placeholder="Place your comment here"></textarea>
+						</div>
+						<button type="submit" class="btn btn-danger mb-3">Submit Review</button>
+					</form>
+				<% } %>
+			</div>
+			<% if(dorm.dorm_ratings.length > 0){ %>
+				<hr id="reviews">
+				<div class="card border-none">
+					<ul class="list-group">
+						<% dorm.dorm_ratings.forEach(function(review){ %>
+					  		<li class="list-group-item">
+						  		<div class="container">
+						  			<div class="float-right">
+								  		<% for(var i = 0; i < 5; i++){ %>
+								  			<% if(i < review.rating){ %>
+								  				<img src="/images/static/star-on.png" class="rating-star">
+								  			<% }else{ %>
+								  				<img src="/images/static/star-off.png" class="rating-star">
+								  			<% } %>
+								  		<% } %>
+								  	</div>
+						  			<div class="row">
+						  				<a href="/profile/<%= review.user.user_id %>/about" target="_blank" class="profile-link">
+							  				<img src="/images/user_images/<%= review.user.photo %>" class="img-circle inline" style="width:50px;height:50px">
+							  				<h6 class="fde-text"><%= review.user.profile.first_name %>
+						  				</a>
+						  				<br>
+						  				<small class="text-muted">Posted on <%= review.date_rated %></small>		
+						  			</div>
+						  			<div class="row review-text mt-2">	
+							  			<div class="break-word review-text">
+							  				<%= review.comment %>
+							  			</div>
+							  		</div>
+						  		</div>
+						  	</li>
+					  	<% }); %>
+					</ul>
+				</div>
+			<% }else{ %>
+				<div class="card border-none mt-3">
+					<div class="about">No Reviews Yet</div>
+				</div>
+			<% } %>
+		</div>
+	</div>
+</div>
+
+		<div class="modal fade" id="reserve-modal" tabindex="-1" role="dialog">
+		  	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		  		<div class="container-fluid">
+			    	<div class="modal-content">
+			    		<div class="modal-header">
+			    			<h5 class="modal-title">Reserve a spot in this dorm</h5>
+				      		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          		<span aria-hidden="true">&times;</span>
+					        </button>
+					    </div>
+			      		<div class="modal-body">
+			      			<div class="alert alert-danger" id="alert_room">Please select a room before submitting.</div>
+			      			<div class="alert alert-success" id="alert_room_success">Successfully submitted a reservation. Please wait for the owner's confirmation of your reservation</div>
+			      			<h6 class="title-bold">Select a room:</h6>
+			      			<div class="rooms">
+			      				<% var roomArray = []; %>
+			      				<% room.forEach(room => { %>
+			      					<button class="roombutton" data-target="#more<%= room.room_id %>" value="<%= room.room_id %>">
+			      						<div class="room">
+											<i class="fas fa-bed fa-lg"></i>
+											<h6 class="mt-3 title-bold"><%= room.room_name %></h6>
+											<small class="search-text-list-location"><i class="fa fa-user"></i> <%= room.availableslots %>/<%= room.numberofslots %> Slots Available</small>
+											<h6><small class="search-text-list-location"><i class="fas fa-transgender"></i> <%= room.room_gender %></small></h6>
+										</div>
+			      					</button>
+			      					<% roomArray.push(room); %>
+			      				<% }); %>
+			      			</div>
+			      			<hr>
+			      			<% roomArray.forEach(room => { %>
+			      				<div class="more_reserve" id="more<%= room.room_id %>">
+			      					<h6 class="title-bold">Slots</h6>
+			      					<div class="slots">
+			      						<% room.room_slots.forEach(slot => { %>
+							      			<% if(slot.room_id == room.room_id){ %>
+							      				<% if(slot.occupant_id == null){ %>
+							      					<div class="inline">
+								      					<img src="/images/static/no_occupant.png" height="40px">
+								      					<p>Vacant</p>
+								      				</div>
+							      				<% }else{ %>
+							      					<% for(let occu of occupant){ %>
+							      						<% if(slot.occupant_id == occu.user_id){ %>
+							      							<div class="inline">
+								      							<img src="/images/static/occupied.png" class="img-circular">
+								      							<p>Occupied</p>
+								      						</div>
+								      						<% break; %>
+							      						<% } %>
+							      					<% } %>
+							      				<% } %>
+							      			<% } %>
+							      		<% }); %>
+			      					</div>
+			      					<hr>
+			      					<h6 class="title-bold">Gender: </h6>
+			      					<h6><small class="search-text-list-location"><i class="fas fa-transgender"></i> <%= room.room_gender %></small></h6>
+			      					<hr>
+			      					<h6 class="title-bold">Room Description</h6>
+							      	<div class="about">
+							      		<div class="row mb-2">
+							      			<% if(room.room_description){ %>
+								      			<p class="p-3"><%= room.room_description %></p>
+								      		<% }else{ %>
+								      			<p class="p-3">No description stated.</p>
+								      		<% } %>
+								      	</div>
+							      	</div>
+							      	<hr>
+							      	<h6 class="title-bold">Price: <span class="about">&#8369;<%= (Number(room.room_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %> per Person a Month</span></h6>
+							      	<h6 class="title-bold">Advance Payment: <span class="about"><%= dorm.dorm_advance_payment %> months</span></h6>
+							      	<h6 class="title-bold">Utility Bill: <span class="about"><%= room.room_utility %></span></h6>
+							      	<form action="/dorm/<%= dorm.dorm_id %>/reservation" method="POST" id="reserve_form">
+							      		<div class="form-group">
+							      			<label class="title-bold mr-5">I want to move-in on: </label>
+							      			<input type="date" name="move_in_date" class="form-control">
+							      		</div>
+							      		<div class="form-group">
+							      			<label class="title-bold mr-5">Reserve for: </label>
+					      					<input type="number" name="slots_reserved" class="form-control w-25 inline" max="<%= room.availableslots %>" min="1" value="1">
+					      					<span class="fs-subtitle">Person</span>
+							      		</div>
+										<% if(currentUser){ %>
+										<input type="hidden" name="roomgender" value="<%= room.room_gender %>">
+										<input type="hidden" name="user_id" id="user_id" value="<%= currentUser.user_id %>">
+										<% } %>
+										<button class="btn btn-danger w-100 reservebutton">Reserve</button>
+									</form>
+							    </div>
+			      			<% }); %>
+			      			<input type="hidden" name="selectedroomid" id="selectedroomid">
+			      		</div>
+			    	</div>
+			    </div>
+		  	</div>
+		</div>
+
+<script type="text/javascript">
+	<% if(anchor){ %>
+		$(document).ready(function(){
+			$('html, body').animate({
+			    scrollTop: $('#<%= anchor %>').offset().top
+			}, 'slow');
+		});
+	<% } %>
+</script>
+		
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAeqKaE2xSUv_iplHE5GK1baRKlwKyURrE"></script>
+
+<script type="text/javascript" src="/assets/listing-show.js"></script>
+
+<% include ../partials/footer %>

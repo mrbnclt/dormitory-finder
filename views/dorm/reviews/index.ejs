@@ -1,0 +1,80 @@
+<% include ../../partials/header %>
+	
+	<div class="container-fluid">
+		<div class="row">
+			<% include ../menu-partial %>
+        	<div class="col-12 col-md-9 pt-3">
+        		<h2 class="fs-title center">Tenant Reviews</h2>
+        		<div class="container my-2">
+        			<% if(reviews.length > 0){ %>
+						<hr id="reviews">
+						<form action="/dorm/<%= dorm.dorm_id %>/reviews" method="GET">
+							<div class="form-inline mb-3">
+								<h6 class="title-bold">Order By: </h6>
+								<select class="form-control ml-2" name="sort" id="sort">
+									<% var mr, o, rlh, rhl; %>
+									<% if(selected === "Most Recent"){ %>
+										<% mr = "selected"; %>
+									<% }else if(selected === "Oldest"){ %>
+										<% o = "selected"; %>
+									<% }else if(selected === "Rating (Lowest-Highest)"){ %>
+										<% rlh = "selected"; %>
+									<% }else if(selected === "Rating (Highest-Lowest)"){%>
+										<% rhl = "selected"; %>
+									<% } %>
+									<option <%= mr %> >Most Recent</option>
+									<option <%= o %> >Oldest</option>
+									<option <%= rlh %> >Rating (Lowest-Highest)</option>
+									<option <%= rhl %> >Rating (Highest-Lowest)</option>
+								</select>
+							</div>
+						</form>
+						<div class="card border-none">
+							<ul class="list-group">
+								<% reviews.forEach(function(review){ %>
+							  		<li class="list-group-item">
+								  		<div class="container">
+								  			<div class="float-right">
+										  		<% for(var i = 0; i < 5; i++){ %>
+										  			<% if(i < review.rating){ %>
+										  				<img src="/images/static/star-on.png" class="rating-star">
+										  			<% }else{ %>
+										  				<img src="/images/static/star-off.png" class="rating-star">
+										  			<% } %>
+										  		<% } %>
+										  	</div>
+								  			<div class="row">
+								  				<a href="/profile/<%= review.user.user_id %>/about" target="_blank" class="profile-link">
+									  				<img src="/images/user_images/<%= review.user.photo %>" class="img-circle inline" style="width:50px;height:50px">
+									  				<h6 class="fde-text"><%= review.user.profile.first_name %>
+									  			</a>
+								  				<br>
+								  				<small class="text-muted">Posted on <%= review.date_rated %></small>		
+								  			</div>
+								  			<div class="row review-text mt-2">	
+									  			<div class="break-word review-text">
+									  				<%= review.comment %>
+									  			</div>
+									  		</div>
+								  		</div>
+								  	</li>
+							  	<% }); %>
+							</ul>
+						</div>
+					<% }else{ %>
+						<div class="card border-none mt-3">
+							<div class="about">No Reviews Yet</div>
+						</div>
+					<% } %>
+        		</div>
+	        </div>
+  		</div>
+	</div>
+
+<script type="text/javascript">
+	$("#sort").change(function(){
+		$(this).parent().parent().submit();
+	});
+</script>
+
+<% include ../../partials/footer %>

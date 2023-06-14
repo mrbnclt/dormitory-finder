@@ -1,0 +1,32 @@
+<% include ../partials/header %>
+
+	<div class="index-form bg-white">
+		<div class="container p-5 center">
+			<h5 class="title-bold">Send New Message</h5>
+			<form action="/message/new" method="POST">
+				<input type="hidden" name="dorm_id" value="<%= dormInfo.dorm_id %>">
+				<input type="hidden" name="from_id" value="<%= currentUser.user_id %>">
+				<input type="hidden" name="to_id" value="<%= dormInfo.owner_user_id %>">
+				<div class="row center">
+					<div class="col-12 col-md-6">
+						<img class="img-circle" style="height:100px; width:100px;" src="/images/user_images/<%= userInfo.photo %>">
+						<h5 class="title-bold">To <%= userInfo.profile.first_name %></h5>
+					</div>
+					<div class="col-12 col-md-6">
+						<a class="dorm-link" href="/listing/<%= dormInfo.dorm_id %>" target="_blank">
+							<img class="img-circle bg-transparent" style="height:100px; width:100px;" src="/images/dorm_images/<%= dormInfo.dorm_images[0].image %>">
+							<h5 class="title-bold">About <%= dormInfo.dorm_name %></h5>
+						</a>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<h5 class="title-bold">Message</h5>
+					<textarea class="form-control form-control-lg" rows="4" name="message" placeholder="Enter your message here"></textarea>
+				</div>
+				<button class="btn btn-danger btn-lg mt-1">Send Message</button>
+			</form>		
+		</div>
+	</div>
+
+<% include ../partials/footer %>

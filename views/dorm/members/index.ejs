@@ -1,0 +1,37 @@
+<% include ../../partials/header %>
+	
+	<div class="container-fluid">
+		<div class="row">
+			<% include ../menu-partial %>
+        	<div class="col-12 col-md-9">
+        		<h2 class="fs-title center">Dormitory Members</h2>
+     	 		<div class="container">
+	                <div class="row">
+			            <table class="table table-striped table-sm">
+			                <thead>
+			                  	<tr>
+			                      	<th>Name</th>
+			                      	<th></th>                                     
+			                  	</tr>
+			              	</thead>   
+			              	<tbody>
+			              		<tr>
+			              			<td><img src="/images/user_images/<%= owner.photo %>" class="img-circle mr-2" style="width:40px;height:40px"><%= owner.profile.first_name %> <%= owner.profile.last_name%></td>
+			              			<td><span class="text-muted ">Owner</span></td>
+			              		</tr>
+				               <% members.forEach(member => { %>
+				               	<tr>
+				               		<td><img src="/images/user_images/<%= member.photo %>" class="img-circle mr-2" style="width:40px;height:40px"><%= member.first_name %> <%= member.last_name%></td>  
+				               		<td><span class="text-muted">Tenant</span></td>             		
+				             	</tr>
+				               <% }); %>                          
+			              	</tbody>
+		            	</table>
+		            </div>
+	            </div>
+	        </div>
+  		</div>
+	</div>
+
+	
+<% include ../../partials/footer %>

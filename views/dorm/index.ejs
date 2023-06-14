@@ -1,0 +1,391 @@
+<% include ../partials/header %>
+	
+	<div class="container">
+		<% if(userType === "Tenant"){ %>
+			<% if(notConfirmedReservations.length == 0 && confirmedReservations.length == 0){ %>
+				<div class="container message-div center no-messages">
+					<h5 class="title-bold">You have no reservations yet.</h5>
+					<h6 class="fs-subtitle">Search for dormitories and make your reservations. Click the button below.</h6>
+					<a class="btn btn-danger btn-lg" href="/search?location=">View Listings</a>
+				</div>
+			<% }else{ %>
+				<% if(confirmedReservations.length > 0){ %>
+					<div class="row dorm-lists-div" style="display: flex; flex-wrap: wrap;">
+						<h6 class="title-bold">Confirmed Reservations</h6>
+						<div class="container message-div m-0">
+							<% confirmedReservations.forEach(function(reservation){ %>
+								<% var confirmedReserveDate = new Date(reservation.reservation_date); %>
+				              	<% var confirmedMoveDate = new Date(reservation.move_in_date); %>
+				              	<% var datePaid = new Date(reservation.payment.date_paid); %>
+								<div class="row corner-curved">
+							    	<div class="col-12 col-md-3 p-0 m-0">
+									    <div id="<%= reservation.room.dorm.dorm_id %>" class="carousel slide h-100" data-interval="false">
+											<div class="carousel-inner corner-curved">
+												<% var counter = 0;%>
+											 	<% reservation.room.dorm.dorm_images.forEach(function(image){ %>
+											 		<% if(counter < 1){ %>
+													    <div class="carousel-item active">
+													      	<img class="d-block w-100" src="/images/dorm_images/<%= image.image %>" style="max-height: 250px">
+													    </div>
+													    <% counter++; %>
+													<% }else{ %>
+														<div class="carousel-item">
+													      	<img class="d-block w-100" src="/images/dorm_images/<%= image.image %>" style="max-height: 250px">
+													    </div>
+													<% } %>
+												<% }); %>
+											</div>
+											<a class="carousel-control-prev" href="#<%= reservation.room.dorm.dorm_id %>" role="button" data-slide="prev">
+											    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+											</a>
+											<a class="carousel-control-next" href="#<%= reservation.room.dorm.dorm_id %>" role="button" data-slide="next">
+											    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+											</a>
+								    	</div>
+								    </div>
+								    <div class="col-12 col-md-9 mt-3" class="w-100">
+									    <div class="row">
+									    	<div class="col-7 col-md-9">
+									    		<a href="/listing/<%= reservation.room.dorm.dorm_id %>" target="_blank">
+									    			<div>
+											    		<small class="badge badge-success">confirmed reservation</small>
+													    <h6 class="search-text-list-header m-0"><%= reservation.room.dorm.dorm_name %></h6>
+													    <small class="search-text-list-location"><i class="fas fa-map-marker-alt"></i> <%= reservation.room.dorm.address_dorm.dorm_complete_loc %></small>
+													    <div class="row">
+													    	<div class="col-12 col-lg-6">
+													    		<small><i class="far fa-clock"></i> Move-in at <span class="search-text-list-location"><%= confirmedMoveDate.toDateString(); %></span></small>
+													    	</div>
+													    	<div class="col-12 col-lg-6">
+													    		<small><i class="far fa-clock"></i> Reservation made on <span class="search-text-list-location"><%= confirmedReserveDate.toDateString(); %></span></small>
+													    	</div>
+													    	<div class="col-12 col-lg-6">
+													    		<small><i class="far fa-money-bill-alt"></i> Payment paid on <span class="search-text-list-location"><%= datePaid.toDateString(); %></span></small>
+													    	</div>
+													    	<div class="col-12 col-lg-6">
+													    		<small><i class="fas fa-bed"></i> <span class="search-text-list-location"><%= reservation.slots_reserved %></span> slots reserved </small>
+													    	</div>
+													    </div>
+													</div>
+											    </a>
+											</div>
+											<div class="col-5 col-md-3">
+												<div class="row">
+												    <div class="col-12 mb-2">
+												    	<a href="/listing/<%= reservation.room.dorm.dorm_id %>?anchor=reviewForm" class="btn btn-danger btn-sm">Write a Review</a>
+												    </div>
+												    <div class="col-12">
+												    	<button data-toggle="modal" data-target="#payment-<%= reservation.payment.payment_id %>" class="btn btn-danger btn-sm">View Payment</button>
+												    	<div class="modal fade" id="payment-<%= reservation.payment.payment_id %>" tabindex="-1" role="dialog">
+														  	<div class="modal-dialog modal-dialog-centered" role="document">
+														  		<div class="container-fluid">
+															    	<div class="modal-content">
+															    		<div class="modal-header">
+											            					<% var paidDate = new Date(reservation.payment.date_paid); %>
+											            					<h4 class="fs-title">Reservation paid on <%= paidDate.toDateString(); %></h4>
+											            					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	          	<span aria-hidden="true">&times;</span>
+																	        </button>
+											            				</div>
+												            			<div clas="modal-body">
+												            				<div class="container">
+												            					<div class="row pb-2 pt-4 center ">
+												            						<div class="col-6">
+												            							<h6 class="title-bold">Paypal Payment ID:</h6> 
+												            						</div>
+												            						<div class="col-6">
+												            							<%= reservation.payment.payment_id_paypal %>
+												            						</div>
+												            					</div>
+												            					<div class="row pb-2 pt-4 center ">
+												            						<div class="col-6">
+												            							<h6 class="title-bold">Amount:</h6> 
+												            						</div>
+												            						<div class="col-6">
+												            							 &#8369;<%= (Number(reservation.payment.amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %> 
+												            						</div>
+												            					</div>
+												            					<div class="row pt-2 pb-4 center my-0">
+												            						<div class="col-6">
+												            							<h6 class="title-bold">Paid by:</h6> 
+												            						</div>
+												            						<div class="col-6">
+												            							<a href="/profile/<%= reservation.user.user_id %>/about" class="text">
+													            							<img src="/images/user_images/<%= reservation.user.photo %>" class="img-circle mr-2" style="width:40px;height:40px"><%= reservation.user.profile.first_name %> <%= reservation.user.profile.last_name%>
+													            						</a>
+												            						</div>
+												            					</div>
+												            				</div>
+												            			</div>
+															    	</div>
+															    </div>
+														  	</div>
+														</div>
+												    </div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							<% }); %>
+						</div>
+					</div>
+				<% }else{ %>
+					<div class="container message-div center no-reservations">
+						<h5 class="title-bold">No Confirmed Reservations Yet</h5>
+						<h6 class="fs-subtitle">Search for dormitories and make your reservations. Click the button below.</h6>
+						<a class="btn btn-danger btn-lg" href="/search?location=">View Listings</a>
+					</div>
+				<% } %>
+				<% if(notConfirmedReservations.length > 0){ %>
+					<div class="row dorm-lists-div" style="display: flex; flex-wrap: wrap;">
+						<form action="/dorm/" method="GET">
+							<select class="form-control w-100 mb-3" name="filter" id="filterReservation">
+								<% if(filter === "All Reservations"){ %> 
+			    				<option selected>All Reservations</option>
+			    				<option>Pending Reservations</option>
+			    				<option>Cancelled Reservations</option>
+			    			<% }else if(filter === "Cancelled Reservations"){ %>
+			    				<option>All Reservations</option>
+			    				<option>Pending Reservations</option>
+			    				<option selected>Cancelled Reservations</option>
+			    			<% }else if(filter === "Pending Reservations"){ %>
+			    				<option>All Reservations</option>
+			    				<option selected>Pending Reservations</option>
+			    				<option>Cancelled Reservations</option>
+			    			<% }else{ %>
+			    				<option selected>All Reservations</option>
+			    				<option>Pending Reservations</option>
+			    				<option>Cancelled Reservations</option>
+			    			<% } %>
+							</select>
+						</form>
+						<div class="container message-div no-messages p-0 m-0">
+							<div class="p-5 row">
+								<% notConfirmedReservations.forEach(function(reservation){ %>
+									<% var status, button, viewed; %>
+									<% if(reservation.tenant_viewed === "0"){ %>
+										<% viewed = "update-not-viewed" %>
+									<% } %>
+					               	<% if(reservation.status == "pending"){ %>
+					               		<% button = "disabled"; %>
+					               		<% status = "badge-warning"; %>
+					              	<% }else if(reservation.status == "confirmed"){ %>
+					              		<% button = "disabled"; %>
+					              		<% status = "badge-success"; %>
+					              	<% }else if(reservation.status == "cancelled"){ %>
+					              		<% button = "disabled"; %>
+					              		<% status = "badge-danger"; %>
+					              	<% }else if(reservation.status == "owner confirmed"){ %>
+					              		<% status = "badge-warning"; %>
+					              	<% }else if(reservation.status == "no slots left"){ %>
+					              		<% button = "disabled"; %>
+					              		<% status = "badge-danger"; %>
+					              	<% } %>
+					              	<% var reserveDate = new Date(reservation.reservation_date); %>
+					              	<% var moveDate = new Date(reservation.move_in_date); %>
+									<div class="col-12 col-md-6 mb-3">
+										<div class="card w-100">
+											<img class="card-img-top" style="max-height:300px;" src="/images/dorm_images/<%= reservation.room.dorm.dorm_images[0].image %>">
+										  	<div class="card-body  <%= viewed %>">
+										    	<h5 class="title-bold mb-3"><%= reservation.room.dorm.dorm_name %></h5>
+										    	<div class="row mb-1">
+										    		<div class="col-6 col-sm-6">
+										    			<h6 class="fs-title m-0">Reservation Status: </h6>
+										    		</div>
+										    		<div class="col-6 col-sm-6">
+										    			<span class="badge <%= status %>"><%= reservation.status %></span>
+										    		</div>
+										    	</div>
+										    	<hr>
+										    	<div class="row mb-1">
+										    		<div class="container">
+											    		<div class="row">
+											    			<div class="col-6">
+											    				<h6 class="fs-title m-0">Date Reserved: </h6>
+												    		</div>
+												    		<div class="col-6">
+												    			<%= reserveDate.toDateString(); %>
+												    		</div>
+											    		</div>
+											    		<div class="row">
+											    			<div class="col-6">
+											    				<h6 class="fs-title m-0">Move-in Date: </h6>
+												    		</div>
+												    		<div class="col-6">
+												    			<%= moveDate.toDateString(); %>
+												    		</div>
+											    		</div>
+											    	</div>
+										    	</div>
+										    	<hr>
+										    	<div class="row mb-1">
+										    		<div class="col-6">
+										    			<h6 class="fs-title m-0">Actions: </h6>
+										    		</div>
+										    		<div class="col-6">
+										    			<form action="/dorm/<%= reservation.reservation_id %>/reserve" method="POST">
+										    				<button type="button" value="<%= reservation.reservation_id %>" <%= button %> class="btn btn-sm btn-success acceptreservationtenant">Pay</button>
+						               						<button type="button" <%= button %> value="<%= reservation.reservation_id %>" class="btn btn-sm btn-danger declinereservation">Cancel</button>
+										    			</form>
+										    		</div>
+										    	</div>
+										    	<hr>
+										    	<div class="row mb-1">
+										    		<div class="col-6">
+										    			<h6 class="fs-title m-0">Room Reserved: </h6>
+										    		</div>
+										    		<div class="col-6">
+										    			<a href="#" data-toggle="modal" data-target="#<%= reservation.room.room_id %>">View Room</a>
+										    		</div>
+										    	</div>
+										    	<hr>
+										    	<div class="row mb-1">
+										    		<div class="col-6">
+										    			<h6 class="fs-title m-0">Slots Reserved: </h6>
+										    		</div>
+										    		<div class="col-6">
+										    				<%= reservation.slots_reserved %> Slot(s)
+										    		</div>
+										    	</div>
+										    	<h6 class="fs-title m-0"></h6>
+										    	<a href="/listing/<%= reservation.room.dorm.dorm_id %>/" class="btn btn-danger mt-3" target="_blank">View Dormitory</a>
+										    	<% if(reservation.status === "confirmed"){ %>
+										    		<a href="/listing/<%= reservation.room.dorm.dorm_id %>?anchor=reviews" class="btn btn-danger mt-3" target="_blank">Write a Review</a>
+										    	<% } %>
+										  	</div>
+										</div>
+									</div>
+									<div class="modal fade" id="<%= reservation.room.room_id %>" tabindex="-1" role="dialog">
+									  	<div class="modal-dialog modal-dialog-centered" role="document">
+									  		<div class="container-fluid">
+										    	<div class="modal-content">
+										    		<div class="modal-header">
+										    			<h5 class="modal-title"><%= reservation.room.room_name %></h5>
+										    			<span class="ml-auto title-bold my-auto">
+										    				&#8369;<%= (Number(reservation.room.room_amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %>
+										    				per month
+										    			</span>
+											      		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											          		<span aria-hidden="true">&times;</span>
+												        </button>
+												    </div>
+										      		<div class="modal-body">
+										      			<h6 class="title-bold">Slots:</h6>
+										      			<div class="slots">
+										      				<% reservation.room.room_slots.forEach(slot => { %>
+										      					<% if(slot.room_id == reservation.room.room_id){ %>
+										      						<% if(slot.occupant_id == null){ %>
+										      							<div class="inline">
+											      							<img src="/images/static/no_occupant.png" height="40px">
+											      							<p>Available</p>
+											      						</div>
+										      						<% }else{ %>
+										      							<% for(let occu of occupant){ %>
+										      								<% if(slot.occupant_id == occu.user_id){ %>
+										      									<div class="inline">
+											      									<img src="/images/static/occupied.png" class="img-circular">
+											      									<p>Occupied</p>
+											      								</div>
+											      								<% break; %>
+										      								<% } %>
+										      							<% } %>
+										      						<% } %>
+										      					<% } %>
+										      				<% }); %>
+										      			</div>
+										      			<hr>
+										      			<h6 class="title-bold">Room Description</h6>
+										      			<div class="about">
+										      				<% if(reservation.room.room_description){ %>
+												      			<p class="p-3"><%= reservation.room.room_description %></p>
+												      		<% }else{ %>
+												      			<p class="p-3">No description stated.</p>
+												      		<% } %>
+										      			</div>
+										      			<hr>
+										      			<h6 class="title-bold">Advance Payment: <span class="about"><%= reservation.room.dorm.dorm_advance_payment %> months</span></h6>
+										      			<h6 class="title-bold">Utility Bill: <span class="about"><%= reservation.room.room_utility %></span></h6>
+										      		</div>
+										    	</div>
+										    </div>
+									  	</div>
+									</div>
+								<% }); %>
+							</div>
+						</div>
+					</div>
+				<% }else{ %>
+					<div class="container message-div center no-reservations">
+						<h5 class="title-bold">No Other Reservations</h5>
+						<h6 class="fs-subtitle">Search for dormitories and make your reservations. Click the button below.</h6>
+						<a class="btn btn-danger btn-lg" href="/search?location=">View Listings</a>
+					</div>
+				<% } %>
+			<% } %>
+		<% }else{ %>
+			<div class="row dorm-lists-div" style="display: flex; flex-wrap: wrap;">
+				<div class="container message-div no-messages p-0 m-0">
+					<% if(dorms.length > 0){ %>
+						<div class="p-5 row">
+							<% dorms.forEach(function(dorm){ %>
+								<% var viewed; %>
+								<% var noSlotsLeft; %>
+								<% if(dorm.remainingslots[0].slots < 1){ %>
+									<% noSlotsLeft = true; %>
+									<% viewed = "update-not-viewed"; %>
+								<% } %>
+								<% if(dorm.newreservation > 0){ %>
+									<% viewed = "update-not-viewed"; %>
+								<% } %>
+								<div class="col-12 col-md-6 mb-3">
+									<div class="card w-100">
+										<img class="card-img-top" style="max-height:300px;" src="/images/dorm_images/<%= dorm.dorm_images[0].image %>">
+									  	<div class="card-body <%= viewed %>">
+									    	<h6 class="search-text-title-lg mb-2"><%= dorm.dorm_name %></h6>
+									    	<% if(noSlotsLeft){ %>
+									    		<span class="badge badge-danger float-right">No Slots Left</span>
+									    	<% } %>
+									    	<small class="search-text-lg block mb-2"><i class="fa fa-user"></i> <%= dorm.remainingslots[0].slots %>/<%= dorm.allslots[0].allslots %> Slots Available</small>
+									    	<small class="search-text-lg block mb-2"><i class="far fa-calendar-check"></i> <%= dorm.newreservation %> Updates on reservations</small>
+									    	<a href="/dorm/<%= dorm.dorm_id%>/home" class="btn btn-danger mb-2">Manage Dormitory</a>
+									    	<a href="/listing/<%= dorm.dorm_id%>" class="btn btn-danger mb-2">View Listing</a>
+									  	</div>
+									</div>
+								</div>
+							<% }); %>
+							<div class="col-12 col-md-6 mb-3">
+								<a href="/listing/new" id="new">
+									<label class='m-0 p-0 w-100' tabindex='0'>
+										<div class='add_listing_div'>
+											<div class='add_photo_container'>
+												<div class='add_photo_container_middle'>
+													<i class='fas fa-plus img-center'></i>
+													<div class='text-gray mt-2'>
+														<span>Add New Listing</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</label>
+								</a>
+							</div>
+						</div>
+					<% }else{ %>
+						<div class="no-messages center">
+							<h5 class="title-bold">You have not listed a dormitory yet.</h5>
+							<h6 class="fs-subtitle">Add a listing for people to see and view and make their reservations to your dormitory. Click the button below.</h6>
+							<a class="btn btn-danger btn-lg" href="/listing/new">Add New Listing</a>
+						</div>
+					<% } %>
+				</div>
+			</div>
+		<% } %>
+	</div>
+
+	<script type="text/javascript">
+		$("#filterReservation").on("change", function(){
+			$(this).parent().submit();
+		});
+	</script>
+
+<% include ../partials/footer %>

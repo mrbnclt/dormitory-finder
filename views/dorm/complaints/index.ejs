@@ -1,0 +1,61 @@
+<% include ../../partials/header %>
+	
+	<div class="wrapper2">
+		<% include ../menu-partial %>
+        	<div id="content">
+        		<div class="container p-5">
+        			<% if(currentUser.user_type === "Tenant"){ %>
+        				<div class="card w-75 mt-5" style="margin-left:7em">
+        					<div class="card-header center">
+        						<h5 class="fs-title">Complaint Form</h5>
+        					</div>
+        					<div class="card-body">
+        						<form action="/dorm/<%= dorm_id %>/complaints/new" method="POST">
+        							<div class="form-group">
+	        							<label class="title-bold">Issue</label>
+	        							<select class="form-control" name="issue">
+		        							<option>Noisy Neighbor</option>
+		        							<option>Damaged Property</option>
+		        							<option>Roommate Problem</option>
+		        						</select>
+	        						</div>
+	        						<div class="form-group">
+	        							<label class="title-bold">Comment</label>
+	        							<textarea class="form-control" placeholder="Add complaint here" name="complaint"></textarea>
+	        						</div>	
+	        						<div class="form-group">
+	        							<button class="btn btn-danger float-right">Submit</button>
+	        						</div>	
+        						</form>
+        					</div>
+        				</div>
+        			<% }else{ %>
+        				<div class="row">
+				            <table class="table table-striped table-bordered table-sm">
+				                <thead>
+				                  	<tr>
+				                      	<th>Name</th>
+				                      	<th>Issue</th>
+				                      	<th>Complaint</th>
+				                      	<th>Date Complained</th>                                     
+				                  	</tr>
+				              	</thead>   
+				              	<tbody>
+					               <% complaints.forEach(function(complaint){ %>
+					               		<tr>
+					               			<td><img src="/images/user_images/<%= complaint.user.photo %>" class="img-circle mr-2" style="width:40px;height:40px"><%= complaint.user.profile.first_name %> <%= complaint.user.profile.last_name%></td>
+					               			<td><%= complaint.issue %></td>
+					               			<td><%= complaint.complaint %></td>
+					               			<td><%= complaint.date_complained %></td>
+					               		</tr>
+					               <% }); %>                       
+				              	</tbody>
+			            	</table>
+			            </div>
+        			<% } %>
+	        	</div>
+	        </div>
+  		</div>
+	</div>
+	
+<% include ../../partials/footer %>

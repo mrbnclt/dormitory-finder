@@ -1,0 +1,79 @@
+<% include ../partials/header %>
+
+	<div class="container mt-5">
+		<div class="card">
+		  	<div class="card-body">
+		    	<div class="row">
+		    		<div class="col-12 col-md-3 center">
+		    			<img src="/images/user_images/<%= user.photo %>" class="img-circle" style="width:200px;height:200px">
+		    			<h5 class="title-bold"><%= user.profile.first_name + " " + user.profile.last_name %></h5>
+		    			<small class="title-bold"><%= user.profile.contact %></small>
+		    		</div>
+		    		<div class="col-12 col-md-3">
+		    			<div class="form-group">
+		    				<h6 class="fs-subtitle inline">E-Mail: </h6>
+		    				<h6 class="inline"><%= user.username %></h6>
+		    			</div>
+		    			<div class="form-group">
+		    				<h6 class="fs-subtitle inline">Signed Up As: </h6>
+		    				<h6 class="inline"><%= user.user_type %></h6>
+		    			</div>
+		    			<div class="form-group">
+		    				<h6 class="fs-subtitle inline">Gender: </h6>
+		    				<h6 class="inline"><%= user.profile.gender %></h6>
+		    			</div>
+		    			<div class="form-group">
+		    				<h6 class="fs-subtitle inline">Birthdate: </h6>
+		    				<h6 class="inline"><%= user.profile.birth_month + " " + user.profile.birth_day + ", " + user.profile.birth_year %></h6>
+		    			</div>
+		    			<div class="form-group">
+		    				<h6 class="fs-subtitle inline">About <%= user.profile.first_name %>: </h6>
+		    				<h6 class="inline"><%= user.profile.self_description %></h6>
+		    			</div>
+		    		</div>
+		    	</div> 
+		  	</div>
+		</div>
+		<% if(user.user_type === "Dorm Owner"){ %>
+			<% if(dorms){ %>
+				<h5 class="title-bold my-4 center"><%= dorms.length %> Dormitories Listed</h5>
+				<div class="card mb-5">
+					<ul class="list-group">
+						<% dorms.forEach(function(dorm){ %>
+					    	<a href="/listing/<%= dorm.dorm_id %>" class="list-group-item list-group-item-action p-0" target="_blank">
+					    		<div class="container">
+						    		<div class="row">
+						    			<div class="col-12 col-md-3 p-0 m-0">
+							    			<img class="ad-image" src="/images/dorm_images/<%= dorm.image.image %>">
+							    		</div>
+							    		<div class="col-12 col-md-9 py-2 mt-3">
+							    			<div class="row">
+							    				<div class="col-9">
+									    			<h6 class="search-text-list-header m-0"><%= dorm.dorm_name %></h6>
+									    			<small class="search-text-list-location"><i class="fas fa-map-marker-alt"></i> <%= dorm.address.dorm_complete_loc %></small>
+									    			<br>
+									    			<small class="search-text-list-location"><i class="fa fa-user"></i> <%= dorm.roomslots[0].slots %>/<%=dorm.availableslots[0].allslots %> Slots Available</small>
+									    			<div class="small-info mt-2">
+														<span><i class="fas fa-building"></i> <%= dorm.dorm_storey %>/<%= dorm.dorm_type %></span>
+														<span><i class="fas fa-transgender"></i> <%= dorm.dorm_gender %></span>
+														<span><img src="/images/svg/026-bathroom.svg" class="svg"> <%= dorm.dorm_bathroom %> Bathroom(s)</span>
+													</div>
+												</div>
+												<div class="col-3 search-list-price-border">
+													<span class="search-list-price">&#8369;<%= (Number(dorm.avgrent[0].avgrent)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %></span>
+													<br>
+													<span class="search-list-price-text">average rent a month</span>
+												</div>
+											</div>
+							    		</div>
+						    		</div>
+						    	</div>
+					    	</a>
+					    <% }); %> 
+					</ul>
+				</div>
+			<% } %>
+		<% } %>
+	</div>
+
+<% include ../partials/footer %>

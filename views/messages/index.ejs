@@ -1,0 +1,47 @@
+<% include ../partials/header %>
+
+	<div class="container conversation-container">
+		<% if(conversations.length > 0){ %>
+			<h6 class="title-bold">Conversations</h6>
+			<ul class="list-group">
+			  	<% conversations.forEach(function(convo){ %>
+			  		<% var notOpened; %>
+			  		<% convo.messages.forEach(function(messages){ %>
+			  			<% if(messages.to_user_id === currentUser.user_id && messages.opened == "0"){ %>
+			  				<% notOpened = "not-opened" %>
+			  			<% } %>
+			  		<% }); %>
+			  		<a href="/message/<%= convo.conversation_id %>">
+					  	<li class="list-group-item <%= notOpened %>">
+					  		<div class="container">
+					  			<div class="row">
+						  			<div class="col-4">
+						  				<img src="/images/user_images/<%= convo.otherUser.photo %>" class="img-circle inline" style="width:80px;height:80px">
+						  				<h6 class="fde-text inline"><%= convo.otherUser.profile.first_name + " " + convo.otherUser.profile.last_name %></h6>
+						  			</div>
+						  			<div class="col-4 border-left-right my-auto">
+						  				<h6 class="fde-text"><%= convo.messages[0].message %></h6>
+						  			</div>
+						  			<div class="col-4">
+						  				<img src="/images/dorm_images/<%= convo.dorm.dorm_images[0].image %>" class="img-circle inline" style="width:80px;height:80px">
+						  				<h6 class="fde-text inline"><%= convo.dorm.dorm_name %></h6>
+						  			</div>
+						  		</div>
+					  		</div>
+					  	</li>
+				  	</a>
+			  	<% }); %>
+			</ul>
+		<% }else{ %>
+			<div class="container message-div center no-messages">
+				<h5 class="title-bold">No Messages Yet.</h5>
+				<% if(currentUser.user_type === "Dorm Owner"){ %>
+					<h6 class="fs-subtitle">When other people make an inquiry, you can read your messages here.</h6>
+				<% }else{ %>
+					<h6 class="fs-subtitle">When you make an inquiry, you can read your messages here.</h6>
+				<% } %>
+			</div>
+		<% } %>
+	</div>
+
+<% include ../partials/footer %>

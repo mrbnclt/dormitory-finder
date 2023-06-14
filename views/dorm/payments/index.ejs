@@ -1,0 +1,51 @@
+<% include ../../partials/header %>
+	
+	<div class="container-fluid">
+		<div class="row">
+			<% include ../menu-partial %>
+        	<div class="col-12 col-md-9">
+        		<h2 class="fs-title center m-0">Payments</h2>
+        		<form id="sortForm" method="GET" action="/dorm/<%= dorm_id %>/payment">
+        			<select class="form-control w-50 mt-2 mb-2" name="sort" id="sort">
+        				<% if(selected === "Newest"){ %>
+	    					<option >Oldest</option>
+	    					<option selected>Newest</option>
+	    				<% }else{ %>
+	    					<option selected>Oldest</option>
+	    					<option >Newest</option>
+	    				<% } %>
+    				</select>
+        		</form>
+     	 		<div class="container">
+	                <div class="row">
+			            <table class="table table-striped table-sm">
+			                <thead>
+			                  	<tr>
+			                      	<th>Name</th>
+			                      	<th>Amount</th>
+			                      	<th>Date Paid</th>                                       
+			                  	</tr>
+			              	</thead>   
+			              	<tbody>
+				               <% payments.forEach(payment => { %>
+				               	<tr>
+				               		<td><img src="/images/user_images/<%= payment.user.photo %>" class="img-circle mr-2" style="width:40px;height:40px"><%=  payment.user.profile.first_name %> <%=  payment.user.profile.last_name%></td>  
+				               		<td>&#8369;<%= (Number(payment.amount)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %></td> 
+				               		<td><%= payment.date_paid %></td>            		
+				             	</tr>
+				               <% }); %>                          
+			              	</tbody>
+		            	</table>
+		            </div>
+	            </div>
+	        </div>
+  		</div>
+	</div>
+
+	<script type="text/javascript">
+		$("#sort").on("change", function(){
+			$("#sortForm").submit();
+		});
+	</script>
+	
+<% include ../../partials/footer %>
